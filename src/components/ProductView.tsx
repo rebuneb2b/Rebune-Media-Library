@@ -32,7 +32,7 @@ function ProductVisual({ product, className }: { product: ProductGroup; classNam
   if (visual) {
     return (
       <span className={`relative overflow-hidden ${className}`}>
-        <img src={visual.thumbnail} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+        <img src={visual.thumbnail} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
         {has3d && (
           <span className="absolute end-2 top-2 inline-flex items-center gap-1 rounded-full bg-ink-950/80 px-2 py-1 text-[10px] font-extrabold text-white backdrop-blur-sm">
             <Rotate360Icon width={12} height={12} /> 360°
@@ -119,7 +119,7 @@ function FileRow({
           <img
             src={file.thumbnail}
             alt={file.fileName}
-            loading="lazy"
+            loading="lazy" decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         )}

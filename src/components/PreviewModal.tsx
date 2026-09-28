@@ -5,6 +5,33 @@ import { useToast } from "./Toast";
 import { DownloadIcon, FileTextIcon, XIcon } from "./Icons";
 import { TypeBadge } from "./FileCard";
 
+
+let modelViewerPromise: Promise<void> | null = null;
+
+function ensureModelViewerLoaded(): Promise<void> {
+  if (customElements.get("model-viewer")) return Promise.resolve();
+  if (modelViewerPromise) return modelViewerPromise;
+
+  modelViewerPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>('script[data-rebune-model-viewer]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("model-viewer failed to load")), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
+    script.dataset.rebuneModelViewer = "true";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("model-viewer failed to load"));
+    document.head.appendChild(script);
+  });
+
+  return modelViewerPromise;
+}
+
 export default function PreviewModal({
   file,
   onClose,
@@ -17,11 +44,28 @@ export default function PreviewModal({
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [modelViewerReady, setModelViewerReady] = useState(false);
   const modelRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     setZoom(1);
   }, [file?.id]);
+
+  useEffect(() => {
+    const ext = file?.extension?.toLowerCase().replace(".", "") ?? "";
+    const needs3d = file?.fileType === "3d" || ext === "glb" || ext === "gltf";
+    if (!needs3d) {
+      setModelViewerReady(false);
+      return;
+    }
+
+    let active = true;
+    ensureModelViewerLoaded()
+      .then(() => { if (active) setModelViewerReady(true); })
+      .catch(() => { if (active) setModelViewerReady(false); });
+
+    return () => { active = false; };
+  }, [file?.id, file?.fileType, file?.extension]);
 
   useEffect(() => {
     if (!file) return;
@@ -137,6 +181,7 @@ export default function PreviewModal({
         <div className="relative shrink-0 overflow-hidden bg-ink-950">
           {is3d ? (
             <div dir="ltr" className="relative w-full bg-gradient-to-b from-cream-100 to-cream-200" style={{ height: "clamp(360px, 64dvh, 620px)" }}>
+              {modelViewerReady ? (
               <model-viewer
                 ref={modelRef}
                 key={file.id}
@@ -156,6 +201,9 @@ export default function PreviewModal({
                 className="absolute inset-0 block"
                 style={{ width: "100%", height: "100%", display: "block" }}
               />
+              ) : (
+                <div className="absolute inset-0 grid place-items-center text-sm font-extrabold text-ink-500">جارٍ تجهيز العرض ثلاثي الأبعاد…</div>
+              )}
               <div className="absolute bottom-3 start-3 end-3 flex items-center justify-between gap-2">
                 <span className="rounded-full bg-ink-950/75 px-3 py-2 text-[11px] font-bold text-white backdrop-blur-md">
                   360° · اسحب لتدوير المنتج · قرّب بإصبعين أو عجلة الماوس

@@ -1,6 +1,6 @@
 import { withLocalProducts } from "./data/localProducts";
 import { getProductPage, normalizeProductCode } from "./data/productPages";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
   MEDIA_FILES,
   filterFiles,
@@ -13,16 +13,23 @@ import Header from "./components/Header";
 import SectionCards from "./components/SectionCards";
 import FilterChips from "./components/FilterChips";
 import FileGrid from "./components/FileGrid";
-import PreviewModal from "./components/PreviewModal";
-import ProductView from "./components/ProductView";
 import Footer from "./components/Footer";
 import MobileBottomNav from "./components/MobileBottomNav";
 import { SkeletonChips, SkeletonGrid, LibraryError } from "./components/States";
 import { ToastProvider } from "./components/Toast";
 import { Reveal } from "./components/ui";
 
+
+const ProductView = lazy(() => import("./components/ProductView"));
+const PreviewModal = lazy(() => import("./components/PreviewModal"));
+
 type Status = "loading" | "ready" | "error";
 type Source = "drive" | "demo";
+
+const MEDIA_CACHE_KEY = "rebune-media-cache-v1";
+const MEDIA_CACHE_MAX_AGE = 10 * 60 * 1000;
+
+type CachedMedia = { savedAt: number; files: MediaFile[] };
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -45,10 +52,18 @@ export default function App() {
 
     try {
       const items = await fetchDriveMedia();
-      setFiles(withLocalProducts(items.map(toMediaFile)));
+      const nextFiles = withLocalProducts(items.map(toMediaFile));
+      const refreshedAt = new Date();
+      setFiles(nextFiles);
       setSource("drive");
-      setLastRefreshed(new Date());
+      setLastRefreshed(refreshedAt);
       setStatus("ready");
+      try {
+        const cached: CachedMedia = { savedAt: refreshedAt.getTime(), files: nextFiles };
+        localStorage.setItem(MEDIA_CACHE_KEY, JSON.stringify(cached));
+      } catch {
+        // Storage can be unavailable in private/restricted browsing; network data still works.
+      }
     } catch {
       if (!silent) setStatus("error");
     } finally {
@@ -57,7 +72,24 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    void load();
+    let restored = false;
+    try {
+      const raw = localStorage.getItem(MEDIA_CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw) as CachedMedia;
+        if (Array.isArray(cached.files) && Date.now() - cached.savedAt < MEDIA_CACHE_MAX_AGE) {
+          setFiles(cached.files);
+          setSource("drive");
+          setLastRefreshed(new Date(cached.savedAt));
+          setStatus("ready");
+          restored = true;
+        }
+      }
+    } catch {
+      // Ignore malformed/unavailable local cache.
+    }
+
+    void load(restored);
   }, [load]);
 
   /** النسخة التجريبية — تُعرض فقط عند فشل الاتصال وبالضغط الصريح من المستخدم */
@@ -137,13 +169,15 @@ export default function App() {
 
         <main className="flex-1">
           {activeGroup ? (
-            <ProductView
-              group={activeGroup}
-              files={sorted}
-              onBack={() => { setProductCode(null); window.history.replaceState(null, "", window.location.pathname + window.location.search); }}
-              onPreview={setPreview}
-              onOpenProduct={openProduct}
-            />
+            <Suspense fallback={<div className="mx-auto max-w-6xl px-4 py-16 text-center text-sm font-bold text-ink-500">جارٍ تحميل تفاصيل المنتج…</div>}>
+              <ProductView
+                group={activeGroup}
+                files={sorted}
+                onBack={() => { setProductCode(null); window.history.replaceState(null, "", window.location.pathname + window.location.search); }}
+                onPreview={setPreview}
+                onOpenProduct={openProduct}
+              />
+            </Suspense>
           ) : (
             <>
               <section className="mx-auto max-w-6xl px-4 pt-10 md:px-6 md:pt-14">
@@ -216,11 +250,15 @@ export default function App() {
 
         <MobileBottomNav section={section} inProductView={!!activeGroup} onNavigate={handleNavigate} />
 
-        <PreviewModal
-          file={preview}
-          onClose={() => setPreview(null)}
-          onOpenProduct={openProduct}
-        />
+        {preview && (
+          <Suspense fallback={null}>
+            <PreviewModal
+              file={preview}
+              onClose={() => setPreview(null)}
+              onOpenProduct={openProduct}
+            />
+          </Suspense>
+        )}
       </div>
     </ToastProvider>
   );

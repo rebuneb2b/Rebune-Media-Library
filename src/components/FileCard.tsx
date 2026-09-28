@@ -80,6 +80,7 @@ export default function FileCard({
             src={file.thumbnail}
             alt={file.fileName}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           />
         )}

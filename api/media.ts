@@ -241,10 +241,13 @@ export default async function handler(
   const rawKey =
     process.env.GOOGLE_PRIVATE_KEY;
 
+  // Default REBUNE Media Library root folder.
+  // Can still be overridden from Vercel with GOOGLE_DRIVE_FOLDER_ID.
   const rootId =
-    process.env.GOOGLE_DRIVE_FOLDER_ID;
+    process.env.GOOGLE_DRIVE_FOLDER_ID ||
+    "1OIcCC1Y1wc0YFrr1INESs9Dgb7Mhag_u";
 
-  if (!email || !rawKey || !rootId) {
+  if (!email || !rawKey) {
     return res.status(500).json({
       source: "error",
       error: "missing_credentials",
@@ -428,7 +431,7 @@ export default async function handler(
           }
 
           const thumbnailUrl =
-            `https://drive.google.com/thumbnail?id=${file.id}&sz=w1000`;
+            `https://drive.google.com/thumbnail?id=${file.id}&sz=w600`;
 
           const version =
             encodeURIComponent(
