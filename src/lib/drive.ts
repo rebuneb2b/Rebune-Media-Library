@@ -34,8 +34,13 @@ for (const f of MEDIA_FILES) PRODUCT_NAMES[f.productCode] = f.productName;
 /** استخراج رقم الموديل من اسم الملف: RE-2211.mp4 → RE-2211 */
 const CODE_RE = /re-?\d[\d-]*/i;
 
-export async function fetchDriveMedia(signal?: AbortSignal): Promise<DriveItem[]> {
-  const res = await fetch("/api/media", { signal, headers: { Accept: "application/json" } });
+export async function fetchDriveMedia(signal?: AbortSignal, forceRefresh = false): Promise<DriveItem[]> {
+  const url = forceRefresh ? `/api/media?refresh=${Date.now()}` : "/api/media";
+  const res = await fetch(url, {
+    signal,
+    cache: forceRefresh ? "no-store" : "default",
+    headers: { Accept: "application/json" },
+  });
   if (!res.ok) throw new Error(`media API responded with ${res.status}`);
   const data: { files?: DriveItem[] } = await res.json();
   if (!data || !Array.isArray(data.files)) throw new Error("unexpected media API payload");
