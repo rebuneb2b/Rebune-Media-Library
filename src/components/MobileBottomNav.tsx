@@ -11,11 +11,21 @@ export default function MobileBottomNav({
   onNavigate: (s: Section) => void;
 }) {
   const goSearch = () => {
+    // If the user is inside a product page, return to the main library first
+    // so the search field exists in the DOM, then focus it.
+    if (inProductView) onNavigate("all");
+
     window.setTimeout(() => {
-      const input = document.getElementById("library-search") as HTMLInputElement | null;
-      input?.scrollIntoView({ behavior: "smooth", block: "center" });
-      window.setTimeout(() => input?.focus(), 350);
-    }, 20);
+      const input = document.getElementById("product-search") as HTMLInputElement | null;
+      if (!input) return;
+
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+      // A short delay makes mobile Safari/Chrome focus reliably after scrolling.
+      window.setTimeout(() => {
+        input.focus({ preventScroll: true });
+        input.select();
+      }, 300);
+    }, inProductView ? 120 : 20);
   };
 
   const items = [
