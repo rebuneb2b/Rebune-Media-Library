@@ -154,7 +154,7 @@ function FileRow({
             className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-brand-500 px-4 text-[13px] font-extrabold text-white transition-all hover:bg-brand-600 active:scale-95 disabled:opacity-60"
           >
             <DownloadIcon width={15} height={15} className={busy ? "animate-bounce" : ""} />
-            تحميل
+            {file.fileType === "video" ? "تحميل الفيديو" : "تحميل"}
           </button>
         )}
         <button
