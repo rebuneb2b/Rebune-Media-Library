@@ -51,7 +51,7 @@ export default function App() {
     else setStatus("loading");
 
     try {
-      const items = await fetchDriveMedia();
+      const items = await fetchDriveMedia(undefined, silent);
       const nextFiles = withLocalProducts(items.map(toMediaFile));
       const refreshedAt = new Date();
       setFiles(nextFiles);
