@@ -10,6 +10,7 @@ import {
 } from "./data/media";
 import { fetchDriveMedia, toMediaFile } from "./lib/drive";
 import Header from "./components/Header";
+import ProductHubIntro from "./components/ProductHubIntro";
 import SectionCards from "./components/SectionCards";
 import FilterChips from "./components/FilterChips";
 import FileGrid from "./components/FileGrid";
@@ -180,15 +181,13 @@ export default function App() {
             </Suspense>
           ) : (
             <>
-              <section className="mx-auto max-w-6xl px-4 pt-10 md:px-6 md:pt-14">
-                <p className="text-sm font-bold text-brand-600">مكتبة ريبون</p>
-                <h1 className="mt-2 font-display text-3xl font-extrabold text-ink-950 md:text-4xl">كل ما تحتاجه عن منتجك</h1>
-                <p className="mt-3 text-base text-ink-700">اكتشف المنتجات، تعرّف على استخدامها، وحمّل الملفات المتاحة.</p>
-                <label className="mt-6 block max-w-2xl" htmlFor="product-search">
-                  <span className="mb-2 block text-sm font-bold text-ink-700">ابحث باسم المنتج أو رقم الموديل</span>
-                  <input id="product-search" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="مثال: RE-5-096" className="h-14 w-full rounded-xl border border-cream-300 bg-cream-50 px-5 text-base text-ink-950 shadow-card" />
-                </label>
-              </section>
+              <ProductHubIntro
+                query={query}
+                onQuery={setQuery}
+                products={products}
+                onOpenProduct={openProduct}
+                onNavigate={handleNavigate}
+              />
 
               {/* الفلاتر — Skeleton أثناء الجلب من Drive */}
               <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
