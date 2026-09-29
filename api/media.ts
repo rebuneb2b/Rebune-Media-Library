@@ -241,13 +241,10 @@ export default async function handler(
   const rawKey =
     process.env.GOOGLE_PRIVATE_KEY;
 
-  // Default REBUNE Media Library root folder.
-  // Can still be overridden from Vercel with GOOGLE_DRIVE_FOLDER_ID.
   const rootId =
-    process.env.GOOGLE_DRIVE_FOLDER_ID ||
-    "1OIcCC1Y1wc0YFrr1INESs9Dgb7Mhag_u";
+    process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-  if (!email || !rawKey) {
+  if (!email || !rawKey || !rootId) {
     return res.status(500).json({
       source: "error",
       error: "missing_credentials",
@@ -309,133 +306,186 @@ export default async function handler(
 
     /*
      * STEP 2:
-     * Find media folders in parallel. The root normally has only a couple
-     * of category folders, so parallel reads noticeably reduce cold starts.
+     * Find:
+     * فيديوهات / تصاميم / 3D
      */
-    const mediaFolderGroups = await Promise.all(
-      categoryFolders.map(async (categoryFolder) => {
-        const found: MediaFolder[] = [];
-        let pageToken: string | undefined;
+    const mediaFolders: MediaFolder[] = [];
 
-        do {
-          const page: any = await drive.files.list({
-            q: `'${esc(
-              categoryFolder.id
-            )}' in parents and trashed = false and mimeType = '${FOLDER_MIME}'`,
-            fields: FIELDS,
-            pageSize: 1000,
-            pageToken,
-            supportsAllDrives: true,
-            includeItemsFromAllDrives: true,
-            orderBy: "name",
+    for (const categoryFolder of categoryFolders) {
+      let pageToken: string | undefined;
+
+      do {
+        const page: any = await drive.files.list({
+          q: `'${esc(
+            categoryFolder.id
+          )}' in parents and trashed = false and mimeType = '${FOLDER_MIME}'`,
+
+          fields: FIELDS,
+          pageSize: 1000,
+          pageToken,
+
+          supportsAllDrives: true,
+          includeItemsFromAllDrives: true,
+
+          orderBy: "name",
+        });
+
+        for (const folder of page.data.files ?? []) {
+          if (!folder.id || !folder.name) continue;
+
+          const mediaSection =
+            sectionOf(folder.name);
+
+          if (!mediaSection) continue;
+
+          mediaFolders.push({
+            id: folder.id,
+            category: categoryFolder.category,
+            mediaSection,
           });
+        }
 
-          for (const folder of page.data.files ?? []) {
-            if (!folder.id || !folder.name) continue;
-            const mediaSection = sectionOf(folder.name);
-            if (!mediaSection) continue;
-
-            found.push({
-              id: folder.id,
-              category: categoryFolder.category,
-              mediaSection,
-            });
-          }
-
-          pageToken = page.data.nextPageToken ?? undefined;
-        } while (pageToken);
-
-        return found;
-      })
-    );
-
-    const mediaFolders = mediaFolderGroups.flat();
+        pageToken =
+          page.data.nextPageToken ?? undefined;
+      } while (pageToken);
+    }
 
     /*
      * STEP 3:
-     * Read each media folder in parallel. This turns the normal six-folder
-     * Drive scan from a serial waterfall into a small parallel batch.
+     * Read files from each media folder.
      */
-    const fileGroups = await Promise.all(
-      mediaFolders.map(async (mediaFolder) => {
-        const folderFiles: Record<string, unknown>[] = [];
-        let pageToken: string | undefined;
+    const files: Record<string, unknown>[] = [];
 
-        do {
-          const page: any = await drive.files.list({
-            q: `'${esc(
-              mediaFolder.id
-            )}' in parents and trashed = false and mimeType != '${FOLDER_MIME}'`,
-            fields: FIELDS,
-            pageSize: 1000,
-            pageToken,
-            supportsAllDrives: true,
-            includeItemsFromAllDrives: true,
-            orderBy: "name",
-          });
+    for (const mediaFolder of mediaFolders) {
+      let pageToken: string | undefined;
 
-          for (const file of page.data.files ?? []) {
-            if (!file.id || !file.name) continue;
+      do {
+        const page: any = await drive.files.list({
+          q: `'${esc(
+            mediaFolder.id
+          )}' in parents and trashed = false and mimeType != '${FOLDER_MIME}'`,
 
-            const productCode = extractProductCode(file.name);
-            if (!productCode) continue;
+          fields: FIELDS,
+          pageSize: 1000,
+          pageToken,
 
-            const extension = file.name.includes(".")
-              ? (file.name.split(".").pop() ?? "").toLowerCase()
-              : "";
+          supportsAllDrives: true,
+          includeItemsFromAllDrives: true,
 
-            let fileType: "video" | "design" | "3d";
+          orderBy: "name",
+        });
 
-            if (mediaFolder.mediaSection === "3D") {
-              if (extension !== "glb" && extension !== "gltf") continue;
-              fileType = "3d";
-            } else if (mediaFolder.mediaSection === "فيديوهات") {
-              fileType = "video";
-            } else {
-              fileType = "design";
-            }
+        for (const file of page.data.files ?? []) {
+          if (!file.id || !file.name) continue;
 
-            const thumbnailUrl =
-              `https://drive.google.com/thumbnail?id=${file.id}&sz=w480`;
-            const version = encodeURIComponent(file.modifiedTime ?? "");
-            const previewUrl = `/api/file?id=${file.id}&v=${version}`;
-            const downloadUrl = previewUrl;
-            const modelUrl = fileType === "3d" ? previewUrl : undefined;
+          const productCode =
+            extractProductCode(file.name);
 
-            folderFiles.push({
-              id: file.id,
-              name: file.name,
-              extension,
-              mimeType: file.mimeType ?? "",
-              size: formatSize(file.size),
-              modifiedTime: file.modifiedTime ?? "",
-              productCode,
-              category: mediaFolder.category || "عام",
-              mediaSection: mediaFolder.mediaSection,
-              fileType,
-              folderName: mediaFolder.mediaSection,
-              thumbnailUrl,
-              previewUrl,
-              downloadUrl,
-              modelUrl,
-            });
+          /*
+           * Ignore only files that do NOT begin with RE.
+           */
+          if (!productCode) {
+            console.warn(
+              `[media] Ignored file not starting with RE: ${file.name}`
+            );
+
+            continue;
           }
 
-          pageToken = page.data.nextPageToken ?? undefined;
-        } while (pageToken);
+          const extension = file.name.includes(".")
+            ? (
+                file.name.split(".").pop() ?? ""
+              ).toLowerCase()
+            : "";
 
-        return folderFiles;
-      })
-    );
+          let fileType:
+            | "video"
+            | "design"
+            | "3d";
 
-    const files = fileGroups.flat();
+          /*
+           * 3D accepts GLB / GLTF only.
+           */
+          if (mediaFolder.mediaSection === "3D") {
+            if (
+              extension !== "glb" &&
+              extension !== "gltf"
+            ) {
+              console.warn(
+                `[media] Ignored unsupported 3D file: ${file.name}`
+              );
 
-    const forceRefresh = typeof req.query.refresh === "string";
+              continue;
+            }
+
+            fileType = "3d";
+          } else if (
+            mediaFolder.mediaSection === "فيديوهات"
+          ) {
+            fileType = "video";
+          } else {
+            fileType = "design";
+          }
+
+          const thumbnailUrl =
+            `https://drive.google.com/thumbnail?id=${file.id}&sz=w1000`;
+
+          const version =
+            encodeURIComponent(
+              file.modifiedTime ?? ""
+            );
+
+          const previewUrl =
+            `/api/file?id=${file.id}&v=${version}`;
+
+          const downloadUrl =
+            `/api/file?id=${file.id}&v=${version}`;
+
+          const modelUrl =
+            fileType === "3d"
+              ? `/api/file?id=${file.id}&v=${version}`
+              : undefined;
+
+          files.push({
+            id: file.id,
+            name: file.name,
+
+            extension,
+            mimeType: file.mimeType ?? "",
+
+            size: formatSize(file.size),
+
+            modifiedTime:
+              file.modifiedTime ?? "",
+
+            productCode,
+
+            category:
+              mediaFolder.category || "عام",
+
+            mediaSection:
+              mediaFolder.mediaSection,
+
+            fileType,
+
+            folderName:
+              mediaFolder.mediaSection,
+
+            thumbnailUrl,
+            previewUrl,
+            downloadUrl,
+            modelUrl,
+          });
+        }
+
+        pageToken =
+          page.data.nextPageToken ?? undefined;
+      } while (pageToken);
+    }
+
     res.setHeader(
       "Cache-Control",
-      forceRefresh
-        ? "no-store"
-        : "public, s-maxage=600, stale-while-revalidate=3600"
+      "s-maxage=120, stale-while-revalidate=600"
     );
 
     return res.status(200).json({

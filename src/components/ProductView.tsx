@@ -32,7 +32,7 @@ function ProductVisual({ product, className }: { product: ProductGroup; classNam
   if (visual) {
     return (
       <span className={`relative overflow-hidden ${className}`}>
-        <img src={visual.thumbnail} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+        <img src={visual.thumbnail} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
         {has3d && (
           <span className="absolute end-2 top-2 inline-flex items-center gap-1 rounded-full bg-ink-950/80 px-2 py-1 text-[10px] font-extrabold text-white backdrop-blur-sm">
             <Rotate360Icon width={12} height={12} /> 360°
@@ -119,7 +119,7 @@ function FileRow({
           <img
             src={file.thumbnail}
             alt={file.fileName}
-            loading="lazy" decoding="async"
+            loading="lazy"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         )}
@@ -154,7 +154,7 @@ function FileRow({
             className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-brand-500 px-4 text-[13px] font-extrabold text-white transition-all hover:bg-brand-600 active:scale-95 disabled:opacity-60"
           >
             <DownloadIcon width={15} height={15} className={busy ? "animate-bounce" : ""} />
-            {file.fileType === "video" ? "تحميل الفيديو" : "تحميل"}
+            تحميل
           </button>
         )}
         <button

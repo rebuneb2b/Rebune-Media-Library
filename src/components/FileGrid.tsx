@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { groupByProduct, SECTION_LABEL, type MediaFile, type ProductGroup, type Section } from "../data/media";
 import FileCard from "./FileCard";
 import { CountPill, Reveal } from "./ui";
@@ -15,7 +15,7 @@ function ProductThumb({ product }: { product: ProductGroup }) {
         <img
           src={visual.thumbnail}
           alt={product.name}
-          loading="lazy" decoding="async"
+          loading="lazy"
           className="h-full w-full object-contain p-3 transition-transform duration-700 group-hover:scale-105"
         />
         {has3d && (
@@ -106,26 +106,6 @@ export default function FileGrid({
   const productResults = useMemo(() => groupByProduct(files), [files]);
   const productMode = section === "all";
 
-  const PAGE_SIZE = 24;
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-
-  useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
-  }, [section, query, files]);
-
-  const visibleProducts = useMemo(
-    () => productResults.slice(0, visibleCount),
-    [productResults, visibleCount],
-  );
-
-  const visibleFiles = useMemo(
-    () => sorted.slice(0, visibleCount),
-    [sorted, visibleCount],
-  );
-
-  const totalItems = productMode ? productResults.length : sorted.length;
-  const hasMore = visibleCount < totalItems;
-
   return (
     <section id="library" className="mx-auto max-w-6xl scroll-mt-28 px-4 md:px-6">
       {/* رأس الشبكة */}
@@ -191,7 +171,7 @@ export default function FileGrid({
         {sorted.length === 0 ? (
           <EmptyState onClear={onClearAll} />
         ) : productMode ? (
-          visibleProducts.map(product => (
+          productResults.map(product => (
             <article key={product.code} className="overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-card">
               <button className="block w-full text-start" onClick={() => onOpenProduct(product.code)} aria-label={`اكتشف ${product.name}`}>
                 <span className="block aspect-square bg-white"><ProductThumb product={product} /></span>
@@ -205,25 +185,13 @@ export default function FileGrid({
             </article>
           ))
         ) : (
-          visibleFiles.map((f, i) => (
+          sorted.map((f, i) => (
             <Reveal key={f.id} delay={Math.min(i % 8, 7) * 55} className="h-full">
               <FileCard file={f} onPreview={onPreview} onOpenProduct={onOpenProduct} />
             </Reveal>
           ))
         )}
       </div>
-
-      {hasMore && (
-        <div className="mt-7 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setVisibleCount((count) => Math.min(count + PAGE_SIZE, totalItems))}
-            className="min-h-12 rounded-xl border border-cream-300 bg-cream-50 px-6 py-3 text-sm font-extrabold text-ink-800 shadow-card transition-all hover:border-brand-400 hover:text-brand-600 active:scale-[0.98]"
-          >
-            عرض المزيد ({Math.min(PAGE_SIZE, totalItems - visibleCount)})
-          </button>
-        </div>
-      )}
 
       {files.length > 0 && (
         <p className="mt-8 flex items-center justify-center gap-2 pb-2 text-center text-xs font-bold text-ink-400">
