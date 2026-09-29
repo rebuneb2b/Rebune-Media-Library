@@ -45,3 +45,8 @@ RE-5-087: Arabic Three.js scroll landing. Procedural approximate model, not fact
 
 ## Toaster long landing update
 RE-5-087 now uses an Arabic long-form product page with the library cream/orange palette and Cairo/Alexandria fonts. Original proportion-preserving photos, six illustrative toast levels, controls, functions, usage steps, video and specifications. CTA remains https://rebune.com/. Product facts checked against the supplied official store page. Heater and grill journeys unchanged. Entry: products/RE-5-087/index.html; styling: public/products/RE-5-087/landing.css. Build and TypeScript checks passed.
+
+
+## Approved toaster page — RE-5-087
+
+The Arabic long-form landing page at `/products/RE-5-087/index.html` is the approved default for the toaster product card. Preserve the interactive six-level browning selector, product photos, usage steps, video and specifications. The entry uses `src/toaster-landing.js` and `public/products/RE-5-087/landing.css`.

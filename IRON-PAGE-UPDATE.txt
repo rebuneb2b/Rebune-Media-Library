@@ -1,3 +1,9 @@
 صفحة الكاوية RE-3-065 معتمدة الآن بنفس تصميم صفحة التوست RE-5-087: خلفيات كريمية وبرتقالية، مقدمة كبيرة، مميزات، اختيار قماش تفاعلي، تحكم، أوضاع استخدام، تصميم، مشهد استخدام، خطوات ومواصفات.
 فك الضغط وانسخ محتويات media-site إلى جذر مشروعك دون حذف المجلدات الأخرى.
 نجح البناء وفحص الأنواع والروابط المحلية. لم تتوفر معاينة متصفح.
+
+3D update: interactive supplied RE-3-065.glb embedded after features.
+Includes src/iron-viewer.js and public/products/RE-3-065/assets/RE-3-065.glb.
+On-demand loading, touch/mouse orbit, zoom, top/bottom and reset buttons.
+Model is approximate; original product photos remain authoritative.
+Build verified; browser visual verification unavailable in this environment.
