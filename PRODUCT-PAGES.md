@@ -32,3 +32,16 @@
 
 حدود الدقة: النموذج والأطعمة مبنية برمجيًا من الصور المرجعية وليست ملفات CAD أو مسحًا ثلاثي الأبعاد معتمدًا. الغذاء والخامات تمثيل بصري تقريبي. التفكيك يوضح الأجزاء الخارجية الظاهرة فقط، وليس تعليمات صيانة أو فك للجهاز. للوصول إلى تطابق هندسي وخامات فوتوغرافية يلزم نموذج GLB/CAD موثّق وخامات مصورة.
 لم تُختبر اللقطات بصريًا في المتصفح لأن بيئة المعاينة رفضت الاتصال. تم التحقق من البناء والمسارات. يجب مراجعة حركة المفصلة وتفكيك الأجزاء بصريًا قبل نشر النسخة النهائية للجمهور.
+
+
+RE-7-122: Arabic scroll journey at /products/RE-7-122/index.html. Uses the unmodified original PNG with proportional scroll zoom and ambient lighting, not a reconstructed 3D model. Facts sourced from supplied manual and introduction form. Dimensions omitted because sources disagree. CTA links to rebune.com pending a specific product URL.
+
+RE-7-122 updated: procedural Three.js 3D reconstruction based on supplied views. Scroll controls camera, lights and external assembly separation. Animated illustrative flame and mist. Geometry is approximate; no verified internal assembly claimed. Heater entry now products/RE-7-122/index.html; built through Vite.
+
+RE-7-122 now loads the supplied REBUNE_Heater.glb with GLTFLoader. Original GLB bytes and materials preserved. No generated heater geometry remains. Scroll separates named exterior nodes reversibly. Remote remains procedural. Blender file is a source reference and is not required in the web deployment.
+
+RE-5-087: Arabic Three.js scroll landing. Procedural approximate model, not factory CAD. Includes original supplied video transcoded to 720p H264. No timings copied from inconsistent lifestyle image. Route /products/RE-5-087/index.html.
+
+
+## Toaster long landing update
+RE-5-087 now uses an Arabic long-form product page with the library cream/orange palette and Cairo/Alexandria fonts. Original proportion-preserving photos, six illustrative toast levels, controls, functions, usage steps, video and specifications. CTA remains https://rebune.com/. Product facts checked against the supplied official store page. Heater and grill journeys unchanged. Entry: products/RE-5-087/index.html; styling: public/products/RE-5-087/landing.css. Build and TypeScript checks passed.
