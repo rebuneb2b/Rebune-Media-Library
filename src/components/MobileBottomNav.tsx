@@ -23,7 +23,7 @@ export default function MobileBottomNav({
     { key: "search", label: "البحث", icon: <SearchIcon width={20} height={20} />, action: goSearch },
     { key: "latest" as Section, label: "الجديد", icon: <SparkIcon width={20} height={20} />, action: () => onNavigate("latest") },
     { key: "videos" as Section, label: "فيديو", icon: <PlayIcon width={20} height={20} />, action: () => onNavigate("videos") },
-    { key: "products3d" as Section, label: "3D", icon: <Rotate360Icon width={20} height={20} />, action: () => onNavigate("products3d") },
+    { key: "products3d" as Section, label: "المنتجات", icon: <Rotate360Icon width={20} height={20} />, action: () => onNavigate("products3d") },
   ];
 
   return (

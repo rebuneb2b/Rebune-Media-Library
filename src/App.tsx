@@ -1,3 +1,4 @@
+import ProductCatalog from "./components/ProductCatalog";
 import { withLocalProducts } from "./data/localProducts";
 import { getProductPage, normalizeProductCode } from "./data/productPages";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -69,7 +70,7 @@ export default function App() {
 
   /* أحدث الملفات أولًا */
   const sorted = useMemo(
-    () => [...files].sort((a, b) => b.date.localeCompare(a.date)),
+    () => files.filter(file => file.fileType !== "3d").sort((a, b) => b.date.localeCompare(a.date)),
     [files],
   );
 
@@ -157,7 +158,7 @@ export default function App() {
               </section>
 
               {/* الفلاتر — Skeleton أثناء الجلب من Drive */}
-              <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
+              {section !== "products3d" && <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
                 <Reveal>
                   <div className="rounded-[1rem] border border-cream-300/70 bg-cream-50/80 p-3 shadow-card md:rounded-[1.15rem] md:p-5">
                     {status === "ready" ? (
@@ -175,6 +176,7 @@ export default function App() {
                 </Reveal>
               </div>
 
+              }
               <div className="mt-6 md:mt-10">
                 <SectionCards
                   section={section}
@@ -182,6 +184,8 @@ export default function App() {
                   loading={isLoading}
                   onSelect={(s) => {
                     const next = s === section ? "all" : s;
+                    setCategory("all");
+                    setFileType("all");
                     setSection(next);
                     if (next !== "all") scrollToLibrary();
                   }}
@@ -189,9 +193,10 @@ export default function App() {
               </div>
 
               <div className="mt-4">
-                {status === "loading" && <SkeletonGrid />}
-                {status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
-                {status === "ready" && (
+                {section === "products3d" && <ProductCatalog query={query} />}
+                {section !== "products3d" && status === "loading" && <SkeletonGrid />}
+                {section !== "products3d" && status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
+                {section !== "products3d" && status === "ready" && (
                   <FileGrid
                     files={filtered}
                     section={section}

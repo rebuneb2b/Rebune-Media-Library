@@ -50,3 +50,9 @@ RE-5-087 now uses an Arabic long-form product page with the library cream/orange
 ## Approved toaster page — RE-5-087
 
 The Arabic long-form landing page at `/products/RE-5-087/index.html` is the approved default for the toaster product card. Preserve the interactive six-level browning selector, product photos, usage steps, video and specifications. The entry uses `src/toaster-landing.js` and `public/products/RE-5-087/landing.css`.
+
+## Product discovery catalog
+Navigation now uses استكشف المنتجات in place of standalone 3D products. ProductCatalog lists published PRODUCT_PAGES with local product photos, independently of Drive availability. Raw 3D files are excluded from library grids; embedded iron viewer remains available inside its product page. Add each approved page to PRODUCT_PAGES and its image/name to LOCAL_PRODUCT_MEDIA.
+
+## Added RE-2207-2 and RE-1-132
+Both long pages include supplied GLB viewers, original supplied images, source manuals, usage and specifications. Styler: two attachment tabs, 1200W. Kettle: 1.7L, 1850–2200W, interactive 40–100C demonstration in 5C steps and two-hour keep warm per manual.

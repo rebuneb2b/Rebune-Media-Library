@@ -3,8 +3,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-export async function mountIronViewer(host) {
-  const gltf = await new GLTFLoader().loadAsync('/products/RE-3-065/assets/RE-3-065.glb');
+export async function mountIronViewer(host, modelUrl = '/products/RE-3-065/assets/RE-3-065.glb', label = 'كاوية ريبون') {
+  const gltf = await new GLTFLoader().loadAsync(modelUrl);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -47,7 +47,7 @@ export async function mountIronViewer(host) {
     controls.update(); render();
   };
   renderer.domElement.setAttribute('role', 'img');
-  renderer.domElement.setAttribute('aria-label', 'نموذج تفاعلي لكاوية ريبون؛ استخدم أزرار التحكم للدوران والتكبير');
+  renderer.domElement.setAttribute('aria-label', `نموذج تفاعلي ${label}؛ استخدم أزرار التحكم للدوران والتكبير`);
   renderer.domElement.setAttribute('aria-describedby', 'viewer-help');
   host.replaceChildren(renderer.domElement);
   controls.addEventListener('change', render);
