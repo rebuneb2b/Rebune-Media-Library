@@ -17,7 +17,7 @@ load3d.addEventListener('click', async () => {
   } finally { host.setAttribute('aria-busy', 'false'); }
 });
 
-const attachments = {round: ['round.jpg', 'الفرشاة الدائرية', 'ملحق دائري لتصفيف الخصل وتشكيل الأطراف.'], half: ['half-full.jpg', 'الفرشاة النصفية', 'ملحق نصفي لتصفيف خصل الشعر.']};
+const attachments = {round: ['round-brush.png', 'الفرشاة الدائرية', 'ملحق دائري لتصفيف الخصل وتشكيل الأطراف.'], half: ['half-brush.png', 'الفرشاة النصفية', 'ملحق نصفي لتصفيف خصل الشعر.']};
 document.querySelectorAll('[data-attachment]').forEach(button => button.addEventListener('click', () => {
  const [image, title, copy] = attachments[button.dataset.attachment];
  document.querySelectorAll('[data-attachment]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
