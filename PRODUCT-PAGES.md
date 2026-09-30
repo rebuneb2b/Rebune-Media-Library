@@ -56,3 +56,6 @@ Navigation now uses استكشف المنتجات in place of standalone 3D prod
 
 ## Added RE-2207-2 and RE-1-132
 Both long pages include supplied GLB viewers, original supplied images, source manuals, usage and specifications. Styler: two attachment tabs, 1200W. Kettle: 1.7L, 1850–2200W, interactive 40–100C demonstration in 5C steps and two-hour keep warm per manual.
+
+## RE0008
+Added long product page with supplied original imagery, interactive attachment selector, manual and specification form data. No GLB supplied; no 3D viewer is claimed. Reference screenshot used only as general long-page direction; unrelated dryer claims excluded.

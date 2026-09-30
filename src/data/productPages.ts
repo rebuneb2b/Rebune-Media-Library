@@ -1,5 +1,6 @@
 /** Add a local published page here to enable its Learn more link automatically. */
 export const PRODUCT_PAGES: Record<string, string> = {
+  "RE0008": "/products/RE0008/index.html",
   "RE-1-132": "/products/RE-1-132/index.html",
   "RE-2207-2": "/products/RE-2207-2/index.html",
   "RE-3-065": "/products/RE-3-065/index.html",
