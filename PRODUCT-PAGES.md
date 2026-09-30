@@ -59,3 +59,5 @@ Both long pages include supplied GLB viewers, original supplied images, source m
 
 ## RE0008
 Added long product page with supplied original imagery, interactive attachment selector, manual and specification form data. No GLB supplied; no 3D viewer is claimed. Reference screenshot used only as general long-page direction; unrelated dryer claims excluded.
+
+RE0008: Updated attachment gallery with six supplied PNGs/names, thumbnails, previous/next, touch swipe, keyboard navigation and enlarged-image dialog.
