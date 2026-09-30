@@ -43,3 +43,24 @@ document.querySelector('#attachment-zoom').addEventListener('click', () => {
 });
 document.querySelector('#attachment-close').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => {if (event.target === dialog) {const r=dialog.getBoundingClientRect(); if(event.clientX<r.left || event.clientX>r.right || event.clientY<r.top || event.clientY>r.bottom) dialog.close();}});
+
+
+const load3d = document.querySelector('#load-3d');
+load3d.addEventListener('click', async () => {
+  load3d.disabled = true;
+  const host = document.querySelector('#re0008-viewer');
+  const status = document.querySelector('#viewer-status');
+  host.setAttribute('aria-busy', 'true');
+  status.textContent = 'جارٍ تحميل النموذج…';
+  try {
+    const { mountIronViewer } = await import('./iron-viewer.js');
+    await mountIronViewer(host, '/products/RE0008/assets/RE0008.glb', 'مصفف الشعر ريبون RE0008');
+    document.querySelector('#viewer-controls').hidden = false;
+    load3d.hidden = true;
+    status.textContent = 'العرض جاهز — اسحبي المنتج لاستكشافه.';
+  } catch (error) {
+    console.error('RE0008 viewer:', error);
+    status.textContent = 'تعذّر تشغيل العرض ثلاثي الأبعاد. حاولي مجددًا أو شاهدي صور المنتج في الصفحة.';
+    load3d.disabled = false;
+  } finally { host.setAttribute('aria-busy', 'false'); }
+});
