@@ -61,3 +61,6 @@ Both long pages include supplied GLB viewers, original supplied images, source m
 Added long product page with supplied original imagery, interactive attachment selector, manual and specification form data. No GLB supplied; no 3D viewer is claimed. Reference screenshot used only as general long-page direction; unrelated dryer claims excluded.
 
 RE0008: Updated attachment gallery with six supplied PNGs/names, thumbnails, previous/next, touch swipe, keyboard navigation and enlarged-image dialog.
+
+## RE-11-065 — 2026-10-04
+Added long Arabic product page in established cream/orange visual identity. Original supplied images; 6.5L and 1700W from box, dimensions/weight from product form, 12 preset programs and settings from manual page 4 (PDF page 5). Interactive preset selector, product gallery, usage/care/specs and manual download. Added catalog entry and Vite input. No 3D model supplied (3D.jpg is packaging image).
