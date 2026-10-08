@@ -32,35 +32,3 @@
 
 حدود الدقة: النموذج والأطعمة مبنية برمجيًا من الصور المرجعية وليست ملفات CAD أو مسحًا ثلاثي الأبعاد معتمدًا. الغذاء والخامات تمثيل بصري تقريبي. التفكيك يوضح الأجزاء الخارجية الظاهرة فقط، وليس تعليمات صيانة أو فك للجهاز. للوصول إلى تطابق هندسي وخامات فوتوغرافية يلزم نموذج GLB/CAD موثّق وخامات مصورة.
 لم تُختبر اللقطات بصريًا في المتصفح لأن بيئة المعاينة رفضت الاتصال. تم التحقق من البناء والمسارات. يجب مراجعة حركة المفصلة وتفكيك الأجزاء بصريًا قبل نشر النسخة النهائية للجمهور.
-
-
-RE-7-122: Arabic scroll journey at /products/RE-7-122/index.html. Uses the unmodified original PNG with proportional scroll zoom and ambient lighting, not a reconstructed 3D model. Facts sourced from supplied manual and introduction form. Dimensions omitted because sources disagree. CTA links to rebune.com pending a specific product URL.
-
-RE-7-122 updated: procedural Three.js 3D reconstruction based on supplied views. Scroll controls camera, lights and external assembly separation. Animated illustrative flame and mist. Geometry is approximate; no verified internal assembly claimed. Heater entry now products/RE-7-122/index.html; built through Vite.
-
-RE-7-122 now loads the supplied REBUNE_Heater.glb with GLTFLoader. Original GLB bytes and materials preserved. No generated heater geometry remains. Scroll separates named exterior nodes reversibly. Remote remains procedural. Blender file is a source reference and is not required in the web deployment.
-
-RE-5-087: Arabic Three.js scroll landing. Procedural approximate model, not factory CAD. Includes original supplied video transcoded to 720p H264. No timings copied from inconsistent lifestyle image. Route /products/RE-5-087/index.html.
-
-
-## Toaster long landing update
-RE-5-087 now uses an Arabic long-form product page with the library cream/orange palette and Cairo/Alexandria fonts. Original proportion-preserving photos, six illustrative toast levels, controls, functions, usage steps, video and specifications. CTA remains https://rebune.com/. Product facts checked against the supplied official store page. Heater and grill journeys unchanged. Entry: products/RE-5-087/index.html; styling: public/products/RE-5-087/landing.css. Build and TypeScript checks passed.
-
-
-## Approved toaster page — RE-5-087
-
-The Arabic long-form landing page at `/products/RE-5-087/index.html` is the approved default for the toaster product card. Preserve the interactive six-level browning selector, product photos, usage steps, video and specifications. The entry uses `src/toaster-landing.js` and `public/products/RE-5-087/landing.css`.
-
-## Product discovery catalog
-Navigation now uses استكشف المنتجات in place of standalone 3D products. ProductCatalog lists published PRODUCT_PAGES with local product photos, independently of Drive availability. Raw 3D files are excluded from library grids; embedded iron viewer remains available inside its product page. Add each approved page to PRODUCT_PAGES and its image/name to LOCAL_PRODUCT_MEDIA.
-
-## Added RE-2207-2 and RE-1-132
-Both long pages include supplied GLB viewers, original supplied images, source manuals, usage and specifications. Styler: two attachment tabs, 1200W. Kettle: 1.7L, 1850–2200W, interactive 40–100C demonstration in 5C steps and two-hour keep warm per manual.
-
-## RE0008
-Added long product page with supplied original imagery, interactive attachment selector, manual and specification form data. No GLB supplied; no 3D viewer is claimed. Reference screenshot used only as general long-page direction; unrelated dryer claims excluded.
-
-RE0008: Updated attachment gallery with six supplied PNGs/names, thumbnails, previous/next, touch swipe, keyboard navigation and enlarged-image dialog.
-
-## RE-11-065 — 2026-10-04
-Added long Arabic product page in established cream/orange visual identity. Original supplied images; 6.5L and 1700W from box, dimensions/weight from product form, 12 preset programs and settings from manual page 4 (PDF page 5). Interactive preset selector, product gallery, usage/care/specs and manual download. Added catalog entry and Vite input. No 3D model supplied (3D.jpg is packaging image).

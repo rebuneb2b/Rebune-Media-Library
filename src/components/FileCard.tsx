@@ -80,6 +80,7 @@ export default function FileCard({
             src={file.thumbnail}
             alt={file.fileName}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           />
         )}
@@ -136,7 +137,7 @@ export default function FileCard({
               className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-brand-500 text-sm font-extrabold text-white shadow-card transition-all duration-200 hover:bg-brand-600 active:scale-[0.97] disabled:opacity-60"
             >
               <DownloadIcon width={17} height={17} className={busy ? "animate-bounce" : ""} />
-              {busy ? "جارٍ التحميل" : "تحميل"}
+              {busy ? "جارٍ التحميل" : file.fileType === "video" ? "تحميل الفيديو" : "تحميل"}
             </button>
           )}
           <button
