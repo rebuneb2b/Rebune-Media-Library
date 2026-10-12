@@ -9,7 +9,7 @@ modeButtons.forEach(button => button.addEventListener('click', () => {
  const image = document.querySelector('#mode-image'); image.src='/products/RE-3-076/assets/'+mode.image; image.alt=mode.alt;
  for (const key of ['number','title','description','detail']) document.querySelector('#mode-'+key).textContent=mode[key];
 }));
-const viewButtons = [...document.querySelectorAll('.gallery-tabs [data-view]')];
+const viewButtons = [...document.querySelectorAll('[data-view]')];
 viewButtons.forEach(button => button.addEventListener('click', () => {
  viewButtons.forEach(item => item.setAttribute('aria-pressed',String(item === button)));
  const image=document.querySelector('#gallery-image'); image.src='/products/RE-3-076/assets/'+button.dataset.view; image.alt=button.dataset.alt;
