@@ -42,7 +42,7 @@ export default function Header({
           : "border-transparent bg-cream-100/60 backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex h-13 max-w-6xl items-center justify-between gap-4 px-4 md:h-16 md:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-3 md:h-16 md:px-6">
 
         {/* الشعار — يمين (بداية الاتجاه) */}
         <button

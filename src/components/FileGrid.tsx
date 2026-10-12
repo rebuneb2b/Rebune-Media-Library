@@ -167,21 +167,21 @@ export default function FileGrid({
       </Reveal>
 
       {/* الشبكة */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-5 xl:grid-cols-4">
+      <div className={`grid gap-3 md:gap-5 ${productMode ? "grid-cols-2 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"}`}>
         {sorted.length === 0 ? (
           <EmptyState onClear={onClearAll} />
         ) : productMode ? (
           productResults.map(product => (
-            <article key={product.code} className="overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-card">
+            <article key={product.code} className="overflow-hidden rounded-[1.15rem] border border-cream-300 bg-cream-50 shadow-card md:rounded-2xl">
               <button className="block w-full text-start" onClick={() => onOpenProduct(product.code)} aria-label={`اكتشف ${product.name}`}>
                 <span className="block aspect-square bg-white"><ProductThumb product={product} /></span>
-                <span className="block px-5 pt-5">
-                  <span className="lat block text-sm font-bold text-brand-600">{product.code}</span>
-                  <span className="mt-2 block text-lg font-extrabold text-ink-950">{product.name}</span>
-                  <span className="mt-2 block text-sm text-ink-500">{product.category}</span>
+                <span className="block px-3 pt-3 md:px-5 md:pt-5">
+                  <span className="lat block text-[11px] font-bold text-brand-600 md:text-sm">{product.code}</span>
+                  <span className="mt-1.5 block line-clamp-2 min-h-[2.8rem] text-[14px] font-extrabold leading-6 text-ink-950 md:mt-2 md:min-h-0 md:text-lg">{product.name}</span>
+                  <span className="mt-1 block text-[11px] text-ink-500 md:mt-2 md:text-sm">{product.category}</span>
                 </span>
               </button>
-              <div className="p-5"><button onClick={() => onOpenProduct(product.code)} className="min-h-12 w-full rounded-xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white hover:bg-brand-600">اكتشف المنتج</button></div>
+              <div className="p-3 md:p-5"><button onClick={() => onOpenProduct(product.code)} className="min-h-11 w-full rounded-xl bg-brand-500 px-2 py-2.5 text-[11px] font-extrabold text-white hover:bg-brand-600 md:min-h-12 md:px-4 md:py-3 md:text-sm">اكتشف المنتج</button></div>
             </article>
           ))
         ) : (
