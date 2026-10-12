@@ -27,12 +27,12 @@ import {
 
 
 function ProductVisual({ product, className }: { product: ProductGroup; className: string }) {
-  const visual = product.files.find((f) => f.fileType !== "3d" && !!f.thumbnail);
+  const visual = product.files.find((f) => f.fileType !== "3d" && !!f.thumbnail) ?? product.files.find((f) => !!f.thumbnail);
   const has3d = product.files.some((f) => f.fileType === "3d");
   if (visual) {
     return (
       <span className={`relative overflow-hidden ${className}`}>
-        <img src={visual.thumbnail} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+        <img src={visual.thumbnail} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
         {has3d && (
           <span className="absolute end-2 top-2 inline-flex items-center gap-1 rounded-full bg-ink-950/80 px-2 py-1 text-[10px] font-extrabold text-white backdrop-blur-sm">
             <Rotate360Icon width={12} height={12} /> 360°
@@ -109,17 +109,35 @@ function FileRow({
         aria-label={`معاينة ${file.fileName}`}
       >
         {file.fileType === "3d" ? (
-          <span className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-cream-50 to-cream-200 text-brand-600">
-            <span className="flex flex-col items-center">
-              <Rotate360Icon width={25} height={25} />
-              <span className="lat text-[9px] font-extrabold">360°</span>
+          file.thumbnail ? (
+            <>
+              <img
+                src={file.thumbnail}
+                alt={file.fileName}
+                loading="lazy" decoding="async"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <span className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-ink-950/45 to-transparent" />
+              <span className="absolute inset-x-0 bottom-1.5 flex justify-center text-white">
+                <span className="inline-flex items-center gap-1 rounded-full bg-ink-950/80 px-2 py-1 text-[9px] font-extrabold backdrop-blur-sm">
+                  <Rotate360Icon width={11} height={11} />
+                  360°
+                </span>
+              </span>
+            </>
+          ) : (
+            <span className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-cream-50 to-cream-200 text-brand-600">
+              <span className="flex flex-col items-center">
+                <Rotate360Icon width={25} height={25} />
+                <span className="lat text-[9px] font-extrabold">360°</span>
+              </span>
             </span>
-          </span>
+          )
         ) : (
           <img
             src={file.thumbnail}
             alt={file.fileName}
-            loading="lazy"
+            loading="lazy" decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         )}
@@ -154,7 +172,7 @@ function FileRow({
             className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-brand-500 px-4 text-[13px] font-extrabold text-white transition-all hover:bg-brand-600 active:scale-95 disabled:opacity-60"
           >
             <DownloadIcon width={15} height={15} className={busy ? "animate-bounce" : ""} />
-            تحميل
+            {file.fileType === "video" ? "تحميل الفيديو" : "تحميل"}
           </button>
         )}
         <button

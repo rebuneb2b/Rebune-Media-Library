@@ -1,7 +1,6 @@
-import ProductCatalog from "./components/ProductCatalog";
 import { withLocalProducts } from "./data/localProducts";
 import { getProductPage, normalizeProductCode } from "./data/productPages";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
   MEDIA_FILES,
   filterFiles,
@@ -11,19 +10,27 @@ import {
 } from "./data/media";
 import { fetchDriveMedia, toMediaFile } from "./lib/drive";
 import Header from "./components/Header";
+import ProductHubIntro from "./components/ProductHubIntro";
 import SectionCards from "./components/SectionCards";
 import FilterChips from "./components/FilterChips";
 import FileGrid from "./components/FileGrid";
-import PreviewModal from "./components/PreviewModal";
-import ProductView from "./components/ProductView";
 import Footer from "./components/Footer";
 import MobileBottomNav from "./components/MobileBottomNav";
 import { SkeletonChips, SkeletonGrid, LibraryError } from "./components/States";
 import { ToastProvider } from "./components/Toast";
 import { Reveal } from "./components/ui";
 
+
+const ProductView = lazy(() => import("./components/ProductView"));
+const PreviewModal = lazy(() => import("./components/PreviewModal"));
+
 type Status = "loading" | "ready" | "error";
 type Source = "drive" | "demo";
+
+const MEDIA_CACHE_KEY = "rebune-media-cache-v1";
+const MEDIA_CACHE_MAX_AGE = 10 * 60 * 1000;
+
+type CachedMedia = { savedAt: number; files: MediaFile[] };
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -45,11 +52,19 @@ export default function App() {
     else setStatus("loading");
 
     try {
-      const items = await fetchDriveMedia();
-      setFiles(withLocalProducts(items.map(toMediaFile)));
+      const items = await fetchDriveMedia(undefined, silent);
+      const nextFiles = withLocalProducts(items.map(toMediaFile));
+      const refreshedAt = new Date();
+      setFiles(nextFiles);
       setSource("drive");
-      setLastRefreshed(new Date());
+      setLastRefreshed(refreshedAt);
       setStatus("ready");
+      try {
+        const cached: CachedMedia = { savedAt: refreshedAt.getTime(), files: nextFiles };
+        localStorage.setItem(MEDIA_CACHE_KEY, JSON.stringify(cached));
+      } catch {
+        // Storage can be unavailable in private/restricted browsing; network data still works.
+      }
     } catch {
       if (!silent) setStatus("error");
     } finally {
@@ -58,7 +73,24 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    void load();
+    let restored = false;
+    try {
+      const raw = localStorage.getItem(MEDIA_CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw) as CachedMedia;
+        if (Array.isArray(cached.files) && Date.now() - cached.savedAt < MEDIA_CACHE_MAX_AGE) {
+          setFiles(cached.files);
+          setSource("drive");
+          setLastRefreshed(new Date(cached.savedAt));
+          setStatus("ready");
+          restored = true;
+        }
+      }
+    } catch {
+      // Ignore malformed/unavailable local cache.
+    }
+
+    void load(restored);
   }, [load]);
 
   /** النسخة التجريبية — تُعرض فقط عند فشل الاتصال وبالضغط الصريح من المستخدم */
@@ -70,7 +102,7 @@ export default function App() {
 
   /* أحدث الملفات أولًا */
   const sorted = useMemo(
-    () => files.filter(file => file.fileType !== "3d").sort((a, b) => b.date.localeCompare(a.date)),
+    () => [...files].sort((a, b) => b.date.localeCompare(a.date)),
     [files],
   );
 
@@ -138,27 +170,27 @@ export default function App() {
 
         <main className="flex-1">
           {activeGroup ? (
-            <ProductView
-              group={activeGroup}
-              files={sorted}
-              onBack={() => { setProductCode(null); window.history.replaceState(null, "", window.location.pathname + window.location.search); }}
-              onPreview={setPreview}
-              onOpenProduct={openProduct}
-            />
+            <Suspense fallback={<div className="mx-auto max-w-6xl px-4 py-16 text-center text-sm font-bold text-ink-500">جارٍ تحميل تفاصيل المنتج…</div>}>
+              <ProductView
+                group={activeGroup}
+                files={sorted}
+                onBack={() => { setProductCode(null); window.history.replaceState(null, "", window.location.pathname + window.location.search); }}
+                onPreview={setPreview}
+                onOpenProduct={openProduct}
+              />
+            </Suspense>
           ) : (
             <>
-              <section className="mx-auto max-w-6xl px-4 pt-10 md:px-6 md:pt-14">
-                <p className="text-sm font-bold text-brand-600">مكتبة ريبون</p>
-                <h1 className="mt-2 font-display text-3xl font-extrabold text-ink-950 md:text-4xl">كل ما تحتاجه عن منتجك</h1>
-                <p className="mt-3 text-base text-ink-700">اكتشف المنتجات، تعرّف على استخدامها، وحمّل الملفات المتاحة.</p>
-                <label className="mt-6 block max-w-2xl" htmlFor="product-search">
-                  <span className="mb-2 block text-sm font-bold text-ink-700">ابحث باسم المنتج أو رقم الموديل</span>
-                  <input id="product-search" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="مثال: RE-5-096" className="h-14 w-full rounded-xl border border-cream-300 bg-cream-50 px-5 text-base text-ink-950 shadow-card" />
-                </label>
-              </section>
+              <ProductHubIntro
+                query={query}
+                onQuery={setQuery}
+                products={products}
+                onOpenProduct={openProduct}
+                onNavigate={handleNavigate}
+              />
 
               {/* الفلاتر — Skeleton أثناء الجلب من Drive */}
-              {section !== "products3d" && <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
+              <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
                 <Reveal>
                   <div className="rounded-[1rem] border border-cream-300/70 bg-cream-50/80 p-3 shadow-card md:rounded-[1.15rem] md:p-5">
                     {status === "ready" ? (
@@ -176,7 +208,6 @@ export default function App() {
                 </Reveal>
               </div>
 
-              }
               <div className="mt-6 md:mt-10">
                 <SectionCards
                   section={section}
@@ -184,8 +215,6 @@ export default function App() {
                   loading={isLoading}
                   onSelect={(s) => {
                     const next = s === section ? "all" : s;
-                    setCategory("all");
-                    setFileType("all");
                     setSection(next);
                     if (next !== "all") scrollToLibrary();
                   }}
@@ -193,10 +222,9 @@ export default function App() {
               </div>
 
               <div className="mt-4">
-                {section === "products3d" && <ProductCatalog query={query} />}
-                {section !== "products3d" && status === "loading" && <SkeletonGrid />}
-                {section !== "products3d" && status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
-                {section !== "products3d" && status === "ready" && (
+                {status === "loading" && <SkeletonGrid />}
+                {status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
+                {status === "ready" && (
                   <FileGrid
                     files={filtered}
                     section={section}
@@ -221,11 +249,15 @@ export default function App() {
 
         <MobileBottomNav section={section} inProductView={!!activeGroup} onNavigate={handleNavigate} />
 
-        <PreviewModal
-          file={preview}
-          onClose={() => setPreview(null)}
-          onOpenProduct={openProduct}
-        />
+        {preview && (
+          <Suspense fallback={null}>
+            <PreviewModal
+              file={preview}
+              onClose={() => setPreview(null)}
+              onOpenProduct={openProduct}
+            />
+          </Suspense>
+        )}
       </div>
     </ToastProvider>
   );

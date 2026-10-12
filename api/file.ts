@@ -47,6 +47,7 @@ export default async function handler(
   }
 
   const fileId = String(req.query.id || "");
+  const forceDownload = String(req.query.download || "") === "1";
 
   if (!fileId) {
     return res.status(400).json({ error: "missing_file_id" });
@@ -95,7 +96,7 @@ export default async function handler(
     res.setHeader("Accept-Ranges", "bytes");
     res.setHeader(
       "Content-Disposition",
-      `inline; filename*=UTF-8''${encodeURIComponent(fileName)}`
+      `${forceDownload ? "attachment" : "inline"}; filename*=UTF-8''${encodeURIComponent(fileName)}`
     );
 
     // The media URL includes ?v=<Drive modifiedTime>, so immutable caching is safe.

@@ -2,35 +2,61 @@ import type { MediaFile } from "../data/media";
 
 /** Suggests a safe download filename from a media entry. */
 export function fileNameFor(file: MediaFile): string {
-  const base = `${file.productCode}_${file.id}`;
-  const urlExt = file.downloadUrl.split("?")[0].split(".").pop()?.toLowerCase();
-  const fallback = file.fileType === "video" ? "mp4" : file.fileType === "pdf" ? "pdf" : "png";
-  const ext = urlExt && /^[a-z0-9]{2,4}$/.test(urlExt) ? urlExt : fallback;
-  return `${base}.${ext}`;
+  const ext = file.extension?.replace(/^\./, "").toLowerCase();
+  if (ext && !file.fileName.toLowerCase().endsWith(`.${ext}`)) {
+    return `${file.fileName}.${ext}`;
+  }
+  return file.fileName || `${file.productCode}.${ext || "bin"}`;
+}
+
+function withDownloadFlag(url: string): string {
+  const parsed = new URL(url, window.location.origin);
+  parsed.searchParams.set("download", "1");
+  return parsed.origin === window.location.origin
+    ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+    : parsed.toString();
+}
+
+function triggerDirectDownload(url: string, filename?: string): void {
+  const a = document.createElement("a");
+  a.href = url;
+  if (filename) a.download = filename;
+  a.rel = "noopener";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 
 /**
- * Downloads a file. Same-origin assets are fetched as blobs so the browser
- * saves them directly; cross-origin files that block CORS gracefully fall
- * back to opening in a new tab (later replaced by Google Drive links).
+ * Downloads a file with the lightest path possible.
+ *
+ * Google Drive files proxied through /api/file are NOT converted to a Blob in
+ * the browser. Instead we request ?download=1 and the server replies with
+ * Content-Disposition: attachment. This is much friendlier to iPhone/Safari
+ * and large videos because the browser can stream the file directly.
  */
 export async function downloadFile(url: string, filename: string): Promise<"saved" | "opened"> {
-  // روابط Google Drive تُفتح مباشرة — المتصفح يتولى التحميل منها
-  if (/drive\.google\.com/.test(url)) {
+  const parsed = new URL(url, window.location.origin);
+  const isDriveProxy = parsed.origin === window.location.origin && parsed.pathname === "/api/file";
+
+  if (isDriveProxy) {
+    triggerDirectDownload(withDownloadFlag(url), filename);
+    return "saved";
+  }
+
+  // Direct Google Drive links are allowed to handle their own download flow.
+  if (/drive\.google\.com/.test(parsed.hostname)) {
     window.open(url, "_blank", "noopener");
     return "opened";
   }
+
   try {
     const res = await fetch(url, { mode: "cors" });
     if (!res.ok) throw new Error("fetch failed");
     const blob = await res.blob();
     const objectUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    triggerDirectDownload(objectUrl, filename);
     window.setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
     return "saved";
   } catch {
