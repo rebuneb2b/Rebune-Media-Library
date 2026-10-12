@@ -1,7 +1,7 @@
 import { LOCAL_PRODUCT_MEDIA } from "../data/localProducts";
 import { PRODUCT_PAGES, normalizeProductCode } from "../data/productPages";
 
-const INTERACTIVE_CODES = new Set(Object.keys(PRODUCT_PAGES));
+const INTERACTIVE_CODES = new Set(["RE-3-076", "RE-3-065", "RE-1-132", "RE-2207-2", "RE0008", "RE-7-122"]);
 
 export default function ProductCatalog({ query }: { query: string }) {
   const term = query.trim().toLocaleLowerCase();
