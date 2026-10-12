@@ -5,7 +5,6 @@ declare global {
     interface IntrinsicElements {
       "model-viewer": DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
         src?: string;
-        poster?: string;
         alt?: string;
         "camera-controls"?: boolean;
         "auto-rotate"?: boolean;

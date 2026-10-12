@@ -15,7 +15,7 @@ const QUICK: Array<{
 ];
 
 function ProductTile({ product, onOpen }: { product: ProductGroup; onOpen: (code: string) => void }) {
-  const visual = product.files.find((f) => f.fileType !== "3d" && f.thumbnail) ?? product.files.find((f) => !!f.thumbnail);
+  const visual = product.files.find((f) => f.fileType !== "3d" && f.thumbnail);
   return (
     <button
       type="button"
@@ -100,7 +100,7 @@ export default function ProductHubIntro({
               {suggestions.length > 0 && (
                 <div className="absolute inset-x-0 top-[calc(100%+8px)] z-40 overflow-hidden rounded-2xl border border-cream-300 bg-white p-2 shadow-lift">
                   {suggestions.map((p) => {
-                    const visual = p.files.find((f) => f.fileType !== "3d" && f.thumbnail) ?? p.files.find((f) => !!f.thumbnail);
+                    const visual = p.files.find((f) => f.fileType !== "3d" && f.thumbnail);
                     return (
                       <button key={p.code} type="button" onClick={() => onOpenProduct(p.code)} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start transition hover:bg-cream-100">
                         <span className="h-12 w-14 shrink-0 overflow-hidden rounded-lg border border-cream-200 bg-cream-50">

@@ -27,7 +27,7 @@ import {
 
 
 function ProductVisual({ product, className }: { product: ProductGroup; className: string }) {
-  const visual = product.files.find((f) => f.fileType !== "3d" && !!f.thumbnail) ?? product.files.find((f) => !!f.thumbnail);
+  const visual = product.files.find((f) => f.fileType !== "3d" && !!f.thumbnail);
   const has3d = product.files.some((f) => f.fileType === "3d");
   if (visual) {
     return (
@@ -109,30 +109,12 @@ function FileRow({
         aria-label={`معاينة ${file.fileName}`}
       >
         {file.fileType === "3d" ? (
-          file.thumbnail ? (
-            <>
-              <img
-                src={file.thumbnail}
-                alt={file.fileName}
-                loading="lazy" decoding="async"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <span className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-ink-950/45 to-transparent" />
-              <span className="absolute inset-x-0 bottom-1.5 flex justify-center text-white">
-                <span className="inline-flex items-center gap-1 rounded-full bg-ink-950/80 px-2 py-1 text-[9px] font-extrabold backdrop-blur-sm">
-                  <Rotate360Icon width={11} height={11} />
-                  360°
-                </span>
-              </span>
-            </>
-          ) : (
-            <span className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-cream-50 to-cream-200 text-brand-600">
-              <span className="flex flex-col items-center">
-                <Rotate360Icon width={25} height={25} />
-                <span className="lat text-[9px] font-extrabold">360°</span>
-              </span>
+          <span className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-cream-50 to-cream-200 text-brand-600">
+            <span className="flex flex-col items-center">
+              <Rotate360Icon width={25} height={25} />
+              <span className="lat text-[9px] font-extrabold">360°</span>
             </span>
-          )
+          </span>
         ) : (
           <img
             src={file.thumbnail}

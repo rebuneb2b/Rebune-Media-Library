@@ -5,7 +5,6 @@
  * كل ما يصلها هو JSON جاهز من الـ Serverless Function.
  */
 import { MEDIA_FILES, type MediaFile } from "../data/media";
-import { LOCAL_PRODUCT_MEDIA, getLocalProductThumbnail } from "../data/localProducts";
 
 /** شكل العنصر القادم من /api/media */
 export interface DriveItem {
@@ -30,7 +29,7 @@ const PLACEHOLDER = "/media/placeholder.svg";
 
 /** أسماء المنتجات المعروفة — لإعادة استخدام الأسماء العربية مع نفس أرقام الموديلات */
 const PRODUCT_NAMES: Record<string, string> = {};
-for (const f of [...MEDIA_FILES, ...LOCAL_PRODUCT_MEDIA]) PRODUCT_NAMES[f.productCode] = f.productName;
+for (const f of MEDIA_FILES) PRODUCT_NAMES[f.productCode] = f.productName;
 
 /** استخراج رقم الموديل من اسم الملف: RE-2211.mp4 → RE-2211 */
 const CODE_RE = /re-?\d[\d-]*/i;
@@ -57,9 +56,6 @@ export function toMediaFile(item: DriveItem): MediaFile {
   const isDesign =
     item.mediaSection === "تصاميم" || /social|تصميم|design|post|story|reel/i.test(item.name);
 
-  const localThumb = getLocalProductThumbnail(productCode);
-  const shouldUseLocalThumb = Boolean(localThumb && (item.fileType === "3d" || !item.thumbnailUrl || item.thumbnailUrl === PLACEHOLDER));
-
   return {
     id: item.id,
     productCode,
@@ -69,7 +65,7 @@ export function toMediaFile(item: DriveItem): MediaFile {
     fileType: item.fileType,
     extension: item.extension || undefined,
     folderName: item.folderName || undefined,
-    thumbnail: shouldUseLocalThumb ? localThumb! : item.thumbnailUrl || PLACEHOLDER,
+    thumbnail: item.thumbnailUrl || PLACEHOLDER,
     previewUrl: item.previewUrl,
     downloadUrl: item.downloadUrl,
     modelUrl: item.modelUrl,

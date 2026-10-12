@@ -68,32 +68,13 @@ export default function FileCard({
       {/* المعاينة المصغرة */}
       <div className="relative aspect-[4/3] overflow-hidden bg-cream-200">
         {file.fileType === "3d" ? (
-          file.thumbnail ? (
-            <>
-              <img
-                src={file.thumbnail}
-                alt={file.fileName}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-              />
-              <span className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/45 to-transparent" />
-              <span className="absolute inset-x-0 bottom-3 flex justify-center">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-ink-950/80 px-3 py-1.5 text-[11px] font-extrabold text-white backdrop-blur-sm">
-                  <Rotate360Icon width={15} height={15} />
-                  360° / 3D
-                </span>
-              </span>
-            </>
-          ) : (
-            <div className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-cream-50 to-cream-200 text-brand-600">
-              <div className="flex flex-col items-center gap-2">
-                <Rotate360Icon width={42} height={42} />
-                <span className="lat text-sm font-extrabold">360° / 3D</span>
-                <span className="text-[10px] font-bold text-ink-500">اسحب لتدوير المنتج</span>
-              </div>
+          <div className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-cream-50 to-cream-200 text-brand-600">
+            <div className="flex flex-col items-center gap-2">
+              <Rotate360Icon width={42} height={42} />
+              <span className="lat text-sm font-extrabold">360° / 3D</span>
+              <span className="text-[10px] font-bold text-ink-500">اسحب لتدوير المنتج</span>
             </div>
-          )
+          </div>
         ) : (
           <img
             src={file.thumbnail}

@@ -6,7 +6,7 @@ import { ForwardIcon, RefreshIcon, Rotate360Icon, SearchOffIcon, XIcon } from ".
 
 
 function ProductThumb({ product }: { product: ProductGroup }) {
-  const visual = product.files.find((f) => f.fileType !== "3d" && !!f.thumbnail) ?? product.files.find((f) => !!f.thumbnail);
+  const visual = product.files.find((f) => f.fileType !== "3d" && !!f.thumbnail);
   const has3d = product.files.some((f) => f.fileType === "3d");
 
   if (visual) {

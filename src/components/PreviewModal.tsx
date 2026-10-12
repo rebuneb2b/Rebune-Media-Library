@@ -186,7 +186,6 @@ export default function PreviewModal({
                 ref={modelRef}
                 key={file.id}
                 src={file.modelUrl || file.previewUrl}
-                poster={file.thumbnail}
                 alt={`نموذج ثلاثي الأبعاد ${displayName}`}
                 camera-controls
                 auto-rotate
@@ -202,11 +201,6 @@ export default function PreviewModal({
                 className="absolute inset-0 block"
                 style={{ width: "100%", height: "100%", display: "block" }}
               />
-              ) : file.thumbnail ? (
-                <div className="absolute inset-0">
-                  <img src={file.thumbnail} alt={displayName} className="h-full w-full object-contain p-6" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/55 to-transparent px-5 pb-5 pt-12 text-center text-sm font-extrabold text-white">جارٍ تجهيز العرض ثلاثي الأبعاد…</div>
-                </div>
               ) : (
                 <div className="absolute inset-0 grid place-items-center text-sm font-extrabold text-ink-500">جارٍ تجهيز العرض ثلاثي الأبعاد…</div>
               )}
