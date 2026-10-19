@@ -1,0 +1,4 @@
+const modes=[['تدفئة منخفضة','مستوى التدفئة الأول بقدرة 1000 واط.'],['تدفئة مرتفعة','مستوى التدفئة الثاني بقدرة 2000 واط.'],['هواء دون تسخين','تشغيل المروحة دون تفعيل التدفئة.']];
+document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-mode]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));const [title,description]=modes[Number(button.dataset.mode)];document.getElementById('mode-title').textContent=title;document.getElementById('mode-description').textContent=description;}));
+const temperature=document.getElementById('temperature');temperature.addEventListener('input',()=>{document.getElementById('temperature-value').value=temperature.value;});
+const timer=document.getElementById('timer');timer.addEventListener('change',()=>{document.getElementById('timer-result').textContent=timer.value==='0'?'بدون مؤقت':`مدة التشغيل المختارة: ${timer.value} ساعة`;});
