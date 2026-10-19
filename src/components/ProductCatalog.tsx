@@ -6,7 +6,7 @@ export default function ProductCatalog({ query }: { query: string }) {
   const products = Object.entries(PRODUCT_PAGES).map(([code, href]) => ({
     code, href, media: LOCAL_PRODUCT_MEDIA.find(file => file.productCode === code && file.fileType === "image"),
   })).filter(product => product.media && (!term || `${product.code} ${product.media.productName} ${product.media.category}`.toLocaleLowerCase().includes(term) || normalizeProductCode(product.code).includes(normalizeProductCode(term))));
-  return <section id="library" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-10 md:px-6">
+  return <section id="library" className="product-catalog mx-auto max-w-6xl scroll-mt-28 px-4 py-10 md:px-6">
     <h2 className="font-display text-2xl font-extrabold text-ink-950">استكشف المنتجات <span className="text-base text-brand-600">({products.length})</span></h2>
     <p className="mb-6 mt-3 text-ink-700">تعرّف على كل منتج، مميزاته وطريقة استخدامه في صفحة متكاملة، واستكشف العرض ثلاثي الأبعاد عند توفره.</p>
     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

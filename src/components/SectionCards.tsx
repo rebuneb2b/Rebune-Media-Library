@@ -1,5 +1,5 @@
 import { FEATURED, type MediaFile, type Section } from "../data/media";
-import { ForwardIcon, ImageIcon, PlayIcon, SparkIcon } from "./Icons";
+import { ForwardIcon, ImageIcon, PlayIcon, SparkIcon, Rotate360Icon } from "./Icons";
 import { Reveal } from "./ui";
 
 export default function SectionCards({
@@ -22,8 +22,12 @@ export default function SectionCards({
     "group relative h-full w-[78vw] max-w-[310px] shrink-0 snap-start overflow-hidden rounded-[1.2rem] border p-4 text-start transition-all duration-300 hover:-translate-y-1.5 active:scale-[0.985] md:w-full md:max-w-none md:p-7";
 
   return (
+    <>
+    <div className="mobile-section-grid" aria-label="أقسام المكتبة">
+      {([{key:"designs",title:"التصاميم",note:"صور المنتجات والمواد التسويقية",icon:ImageIcon},{key:"videos",title:"الفيديوهات",note:"مقاطع الاستخدام والإعلانات",icon:PlayIcon},{key:"products3d",title:"استكشف المنتجات",note:"معلومات المنتجات وعروضها",icon:Rotate360Icon},{key:"latest",title:"أحدث الملفات",note:"كل ما أُضيف مؤخرًا",icon:SparkIcon}] as const).map(item=><button key={item.key} type="button" aria-pressed={section===item.key} onClick={()=>onSelect(item.key)}><span><b>{item.title}</b><small>{item.note}</small></span><i><item.icon width={21} height={21}/></i></button>)}
+    </div>
     <section
-      className="mx-auto max-w-6xl px-4 md:px-6"
+      className="desktop-section-cards mx-auto max-w-6xl px-4 md:px-6"
       aria-label="أقسام المكتبة"
     >
       <Reveal>
@@ -179,5 +183,6 @@ export default function SectionCards({
         </Reveal>
       </div>
     </section>
+    </>
   );
 }

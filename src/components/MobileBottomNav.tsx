@@ -12,7 +12,7 @@ export default function MobileBottomNav({
 }) {
   const goSearch = () => {
     window.setTimeout(() => {
-      const input = document.getElementById("library-search") as HTMLInputElement | null;
+      const input = document.getElementById("product-search") as HTMLInputElement | null;
       input?.scrollIntoView({ behavior: "smooth", block: "center" });
       window.setTimeout(() => input?.focus(), 350);
     }, 20);
