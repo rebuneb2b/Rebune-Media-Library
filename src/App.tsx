@@ -1,4 +1,3 @@
-import { SearchIcon } from "./components/Icons";
 import ProductCatalog from "./components/ProductCatalog";
 import { withLocalProducts } from "./data/localProducts";
 import { getProductPage, normalizeProductCode } from "./data/productPages";
@@ -12,6 +11,7 @@ import {
 } from "./data/media";
 import { fetchDriveMedia, toMediaFile } from "./lib/drive";
 import Header from "./components/Header";
+import Hero from "./components/Hero";
 import SectionCards from "./components/SectionCards";
 import FilterChips from "./components/FilterChips";
 import FileGrid from "./components/FileGrid";
@@ -148,19 +148,15 @@ export default function App() {
             />
           ) : (
             <>
-              <section className="library-mobile-hero mx-auto max-w-6xl px-4 pt-10 md:px-6 md:pt-14">
-                <p className="text-sm font-bold text-brand-600">مكتبة ريبون</p>
-                <h1 className="mt-2 font-display text-3xl font-extrabold text-ink-950 md:text-4xl">كل ما تحتاجه عن منتجك</h1>
-                <p className="mt-3 text-base text-ink-700">ابحث برقم المنتج أو الاسم، ثم افتح صفحة واحدة تجمع التصاميم والفيديوهات وملفات المنتج.</p>
-                <label className="mobile-search-box mt-6 block max-w-2xl" htmlFor="product-search">
-                  <span className="mb-2 block text-sm font-bold text-ink-700">ابحث باسم المنتج أو رقم الموديل</span>
-                  <input id="product-search" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="ابحث برقم المنتج، مثال: RE-1-132" className="h-14 w-full rounded-xl border border-cream-300 bg-cream-50 px-5 text-base text-ink-950 shadow-card" />
-                </label>
-                  <button className="mobile-search-button" type="button" aria-label="ابحث عن المنتج" onClick={()=>document.getElementById("product-search")?.focus()}><SearchIcon width={23} height={23}/></button>
-              </section>
+              <Hero
+                query={query}
+                onQuery={setQuery}
+                files={sorted}
+                loading={isLoading}
+              />
 
               {/* الفلاتر — Skeleton أثناء الجلب من Drive */}
-              {section !== "products3d" && <div className="library-filter-area mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
+              {section !== "products3d" && <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
                 <Reveal>
                   <div className="rounded-[1rem] border border-cream-300/70 bg-cream-50/80 p-3 shadow-card md:rounded-[1.15rem] md:p-5">
                     {status === "ready" ? (
@@ -195,7 +191,7 @@ export default function App() {
               </div>
 
               <div className="mt-4">
-                {(section === "products3d" || section === "all") && <div className={section === "all" ? "mobile-home-products" : ""}><ProductCatalog query={query} /></div>}
+                {section === "products3d" && <ProductCatalog query={query} />}
                 {section !== "products3d" && status === "loading" && <SkeletonGrid />}
                 {section !== "products3d" && status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
                 {section !== "products3d" && status === "ready" && (

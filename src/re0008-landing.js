@@ -46,7 +46,7 @@ dialog.addEventListener('click', event => {if (event.target === dialog) {const r
 
 
 const load3d = document.querySelector('#load-3d');
-load3d.addEventListener('click', async () => {
+if (load3d) load3d.addEventListener('click', async () => {
   load3d.disabled = true;
   const host = document.querySelector('#re0008-viewer');
   const status = document.querySelector('#viewer-status');

@@ -1,188 +1,81 @@
-import { FEATURED, type MediaFile, type Section } from "../data/media";
-import { ForwardIcon, ImageIcon, PlayIcon, SparkIcon, Rotate360Icon } from "./Icons";
+import type { ReactNode } from "react";
+import { type MediaFile, type Section } from "../data/media";
+import { ClockIcon, ImageIcon, PlayIcon, Rotate360Icon } from "./Icons";
 import { Reveal } from "./ui";
 
 export default function SectionCards({
   section,
   onSelect,
-  files,
-  loading,
+  files: _files,
+  loading: _loading,
 }: {
   section: Section;
   onSelect: (s: Section) => void;
   files: MediaFile[];
   loading: boolean;
 }) {
-  const videos = files.filter((f) => f.fileType === "video").length;
-  const designs = files.filter((f) => f.tags?.includes("design")).length;
-
-  const num = (n: number) => (loading ? "…" : n);
-
-  const cardBase =
-    "group relative h-full w-[78vw] max-w-[310px] shrink-0 snap-start overflow-hidden rounded-[1.2rem] border p-4 text-start transition-all duration-300 hover:-translate-y-1.5 active:scale-[0.985] md:w-full md:max-w-none md:p-7";
+  const cards: Array<{
+    key: Section;
+    title: string;
+    copy: string;
+    icon: ReactNode;
+  }> = [
+    {
+      key: "designs",
+      title: "التصاميم",
+      copy: "صور المنتجات والمواد التسويقية",
+      icon: <ImageIcon width={23} height={23} />,
+    },
+    {
+      key: "videos",
+      title: "الفيديوهات",
+      copy: "مقاطع الاستخدام والإعلانات",
+      icon: <PlayIcon width={22} height={22} />,
+    },
+    {
+      key: "products3d",
+      title: "منتجات 3D",
+      copy: "نماذج تفاعلية للمنتجات",
+      icon: <Rotate360Icon width={24} height={24} />,
+    },
+    {
+      key: "latest",
+      title: "أحدث الملفات",
+      copy: "كل ما أضيف مؤخرًا",
+      icon: <ClockIcon width={22} height={22} />,
+    },
+  ];
 
   return (
-    <>
-    <div className="mobile-section-grid" aria-label="أقسام المكتبة">
-      {([{key:"designs",title:"التصاميم",note:"صور المنتجات والمواد التسويقية",icon:ImageIcon},{key:"videos",title:"الفيديوهات",note:"مقاطع الاستخدام والإعلانات",icon:PlayIcon},{key:"products3d",title:"استكشف المنتجات",note:"معلومات المنتجات وعروضها",icon:Rotate360Icon},{key:"latest",title:"أحدث الملفات",note:"كل ما أُضيف مؤخرًا",icon:SparkIcon}] as const).map(item=><button key={item.key} type="button" aria-pressed={section===item.key} onClick={()=>onSelect(item.key)}><span><b>{item.title}</b><small>{item.note}</small></span><i><item.icon width={21} height={21}/></i></button>)}
-    </div>
-    <section
-      className="desktop-section-cards mx-auto max-w-6xl px-4 md:px-6"
-      aria-label="أقسام المكتبة"
-    >
-      <Reveal>
-        <div className="mb-3 flex items-end justify-between">
-          <h2 className="font-display text-lg font-extrabold text-ink-950 md:text-2xl">
-            تصفّح حسب القسم
-          </h2>
-
-          <span className="hidden text-xs font-bold text-ink-400 md:inline">
-            اضغط للفلترة الفورية
-          </span>
-        </div>
-      </Reveal>
-
-      <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
-        {/* فيديوهات المنتجات */}
-        <Reveal delay={0} className="h-full">
-          <button
-            onClick={() => onSelect("videos")}
-            className={`${cardBase} min-h-36 md:min-h-44 border-transparent bg-ink-950 text-cream-50 shadow-lift ${
-              section === "videos"
-                ? "ring-2 ring-brand-500 ring-offset-2 ring-offset-cream-100"
-                : ""
-            }`}
-          >
-            <img
-              src={FEATURED.videosCard}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover opacity-30 transition-all duration-700 group-hover:scale-105 group-hover:opacity-40"
-            />
-
-            <span
-              className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/55 to-ink-950/20"
-              aria-hidden="true"
-            />
-
-            <span className="relative flex flex-col items-start gap-5 md:gap-8">
-              <span className="grid h-11 w-11 md:h-13 md:w-13 place-items-center rounded-xl bg-brand-500 text-white shadow-card transition-transform duration-300 group-hover:scale-110">
-                <PlayIcon width={24} height={24} />
-              </span>
-
-              <span>
-                <span className="font-display block text-lg font-extrabold md:text-xl">
-                  فيديوهات المنتجات
-                </span>
-
-                <span className="mt-1 flex items-center gap-2 text-xs font-bold text-cream-300">
-                  <span className="lat">{num(videos)}</span>
-                  فيديو
-                  <ForwardIcon
-                    width={14}
-                    height={14}
-                    className="text-brand-400 transition-transform duration-300 group-hover:-translate-x-1"
-                  />
-                </span>
-              </span>
-            </span>
-          </button>
-        </Reveal>
-
-        {/* تصاميم المنتجات */}
-        <Reveal delay={90} className="h-full">
-          <button
-            onClick={() => onSelect("gallery")}
-            className={`${cardBase} min-h-36 md:min-h-44 border-cream-300 bg-cream-50 text-ink-950 shadow-card hover:border-brand-400/60 hover:shadow-lift ${
-              section === "gallery"
-                ? "ring-2 ring-brand-500 ring-offset-2 ring-offset-cream-100"
-                : ""
-            }`}
-          >
-            <img
-              src={FEATURED.designsCard}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover opacity-15 transition-all duration-700 group-hover:scale-105 group-hover:opacity-25"
-            />
-
-            <span
-              className="absolute inset-0 bg-gradient-to-t from-cream-50 via-cream-50/85 to-cream-50/45"
-              aria-hidden="true"
-            />
-
-            <span
-              className="pointer-events-none absolute -bottom-8 -left-8 text-brand-500/10 transition-transform duration-500 group-hover:rotate-12"
-              aria-hidden="true"
+    <section className="mx-auto max-w-6xl px-3 pt-3 md:px-6 md:pt-8" aria-label="أقسام المكتبة">
+      <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-4">
+        {cards.map((card, index) => (
+          <Reveal key={card.key} delay={index * 55} className="h-full">
+            <button
+              type="button"
+              onClick={() => onSelect(card.key)}
+              className={`group flex h-full min-h-[96px] w-full items-center justify-between gap-3 rounded-[1.2rem] border bg-white px-3.5 py-3.5 text-right shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lift active:scale-[0.985] md:min-h-[118px] md:px-5 ${
+                section === card.key
+                  ? "border-brand-500 ring-2 ring-brand-500/15"
+                  : "border-cream-300"
+              }`}
             >
-              <ImageIcon width={130} height={130} strokeWidth={1.2} />
-            </span>
-
-            <span className="relative flex flex-col items-start gap-5 md:gap-8">
-              <span className="grid h-11 w-11 md:h-13 md:w-13 place-items-center rounded-xl bg-brand-100 text-brand-600 transition-transform duration-300 group-hover:scale-110">
-                <ImageIcon width={24} height={24} />
-              </span>
-
-              <span>
-                <span className="font-display block text-lg font-extrabold md:text-xl">
-                  تصاميم المنتجات
+              <span className="min-w-0 flex-1">
+                <span className="font-display block text-[15px] font-extrabold text-ink-950 md:text-lg">
+                  {card.title}
                 </span>
-
-                <span className="mt-1 flex items-center gap-2 text-xs font-bold text-ink-500">
-                  <span className="lat">{num(designs)}</span>
-                  تصميم
-                  <ForwardIcon
-                    width={14}
-                    height={14}
-                    className="text-brand-500 transition-transform duration-300 group-hover:-translate-x-1"
-                  />
+                <span className="mt-1.5 block text-[11px] font-semibold leading-5 text-[#a98765] md:text-xs">
+                  {card.copy}
                 </span>
               </span>
-            </span>
-          </button>
-        </Reveal>
 
-        {/* أحدث الملفات */}
-        <Reveal delay={180} className="h-full">
-          <button
-            onClick={() => onSelect("latest")}
-            className={`${cardBase} min-h-36 md:min-h-44 border-brand-500/25 bg-brand-50 text-ink-950 shadow-card hover:border-brand-500/50 hover:shadow-lift ${
-              section === "latest"
-                ? "ring-2 ring-brand-500 ring-offset-2 ring-offset-cream-100"
-                : ""
-            }`}
-          >
-            <span
-              className="pointer-events-none absolute -bottom-8 -left-8 text-brand-500/15 transition-transform duration-500 group-hover:-rotate-12"
-              aria-hidden="true"
-            >
-              <SparkIcon width={130} height={130} strokeWidth={1.2} />
-            </span>
-
-            <span className="relative flex flex-col items-start gap-5 md:gap-8">
-              <span className="grid h-11 w-11 md:h-13 md:w-13 place-items-center rounded-xl bg-brand-500 text-white shadow-card transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
-                <SparkIcon width={24} height={24} />
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-transform duration-300 group-hover:scale-110 md:h-12 md:w-12">
+                {card.icon}
               </span>
-
-              <span>
-                <span className="font-display block text-lg font-extrabold md:text-xl">
-                  أحدث المواد المضافة
-                </span>
-
-                <span className="mt-1 flex items-center gap-2 text-xs font-bold text-brand-700">
-                  آخر 8 ملفات
-                  <ForwardIcon
-                    width={14}
-                    height={14}
-                    className="text-brand-500 transition-transform duration-300 group-hover:-translate-x-1"
-                  />
-                </span>
-              </span>
-            </span>
-          </button>
-        </Reveal>
+            </button>
+          </Reveal>
+        ))}
       </div>
     </section>
-    </>
   );
 }
