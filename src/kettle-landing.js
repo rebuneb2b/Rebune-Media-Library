@@ -1,5 +1,5 @@
 const load3d = document.querySelector('#load-3d');
-if (load3d) load3d.addEventListener('click', async () => {
+load3d.addEventListener('click', async () => {
   load3d.disabled = true;
   const host = document.querySelector('#iron-viewer');
   const status = document.querySelector('#viewer-status');
