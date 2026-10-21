@@ -21,7 +21,7 @@ export default function Hero({
             مكتبة ريبون
           </span>
 
-          <h1 className="font-display mt-3 text-[2.05rem] font-extrabold leading-[1.2] tracking-[-0.02em] text-ink-950 md:mt-5 md:text-[4rem] lg:text-[4.35rem]">
+          <h1 className="font-display mt-3 text-[1.625rem] font-extrabold leading-[1.3] tracking-[-0.02em] text-ink-950 md:mt-5 md:whitespace-nowrap md:text-[3rem] lg:text-[3.25rem]">
             كل ما تحتاجه عن منتجك
           </h1>
 
