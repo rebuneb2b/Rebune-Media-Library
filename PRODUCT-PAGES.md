@@ -45,3 +45,25 @@ RE-5-087: Arabic Three.js scroll landing. Procedural approximate model, not fact
 
 ## Toaster long landing update
 RE-5-087 now uses an Arabic long-form product page with the library cream/orange palette and Cairo/Alexandria fonts. Original proportion-preserving photos, six illustrative toast levels, controls, functions, usage steps, video and specifications. CTA remains https://rebune.com/. Product facts checked against the supplied official store page. Heater and grill journeys unchanged. Entry: products/RE-5-087/index.html; styling: public/products/RE-5-087/landing.css. Build and TypeScript checks passed.
+
+
+## Approved toaster page — RE-5-087
+
+The Arabic long-form landing page at `/products/RE-5-087/index.html` is the approved default for the toaster product card. Preserve the interactive six-level browning selector, product photos, usage steps, video and specifications. The entry uses `src/toaster-landing.js` and `public/products/RE-5-087/landing.css`.
+
+## Product discovery catalog
+Navigation now uses استكشف المنتجات in place of standalone 3D products. ProductCatalog lists published PRODUCT_PAGES with local product photos, independently of Drive availability. Raw 3D files are excluded from library grids; embedded iron viewer remains available inside its product page. Add each approved page to PRODUCT_PAGES and its image/name to LOCAL_PRODUCT_MEDIA.
+
+## Added RE-2207-2 and RE-1-132
+Both long pages include supplied GLB viewers, original supplied images, source manuals, usage and specifications. Styler: two attachment tabs, 1200W. Kettle: 1.7L, 1850–2200W, interactive 40–100C demonstration in 5C steps and two-hour keep warm per manual.
+
+## RE0008
+Added long product page with supplied original imagery, interactive attachment selector, manual and specification form data. No GLB supplied; no 3D viewer is claimed. Reference screenshot used only as general long-page direction; unrelated dryer claims excluded.
+
+RE0008: Updated attachment gallery with six supplied PNGs/names, thumbnails, previous/next, touch swipe, keyboard navigation and enlarged-image dialog.
+
+## RE-11-065 — 2026-10-04
+Added long Arabic product page in established cream/orange visual identity. Original supplied images; 6.5L and 1700W from box, dimensions/weight from product form, 12 preset programs and settings from manual page 4 (PDF page 5). Interactive preset selector, product gallery, usage/care/specs and manual download. Added catalog entry and Vite input. No 3D model supplied (3D.jpg is packaging image).
+
+## RE-3-076 — 2026-10-11
+Added Arabic long garment-steamer page with supplied original photos, vertical/horizontal selector, detail gallery, specs, care and original manual. Specs: manual technical page 11; size and weight: supplied product form. Heat-up seconds omitted because packaging says 40s while English usage says 45s and Arabic says 35s. Huaban reference inaccessible; used established cream/orange page identity.
