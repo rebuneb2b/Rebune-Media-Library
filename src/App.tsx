@@ -1,3 +1,4 @@
+import ProductCatalog from "./components/ProductCatalog";
 import { withLocalProducts } from "./data/localProducts";
 import { getProductPage, normalizeProductCode } from "./data/productPages";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -10,6 +11,8 @@ import {
 } from "./data/media";
 import { fetchDriveMedia, toMediaFile } from "./lib/drive";
 import Header from "./components/Header";
+import Hero from "./components/Hero";
+import PromoSlider from "./components/PromoSlider";
 import SectionCards from "./components/SectionCards";
 import FilterChips from "./components/FilterChips";
 import FileGrid from "./components/FileGrid";
@@ -69,7 +72,7 @@ export default function App() {
 
   /* أحدث الملفات أولًا */
   const sorted = useMemo(
-    () => [...files].sort((a, b) => b.date.localeCompare(a.date)),
+    () => files.filter(file => file.fileType !== "3d").sort((a, b) => b.date.localeCompare(a.date)),
     [files],
   );
 
@@ -146,18 +149,17 @@ export default function App() {
             />
           ) : (
             <>
-              <section className="mx-auto max-w-6xl px-4 pt-10 md:px-6 md:pt-14">
-                <p className="text-sm font-bold text-brand-600">مكتبة ريبون</p>
-                <h1 className="mt-2 font-display text-3xl font-extrabold text-ink-950 md:text-4xl">كل ما تحتاجه عن منتجك</h1>
-                <p className="mt-3 text-base text-ink-700">اكتشف المنتجات، تعرّف على استخدامها، وحمّل الملفات المتاحة.</p>
-                <label className="mt-6 block max-w-2xl" htmlFor="product-search">
-                  <span className="mb-2 block text-sm font-bold text-ink-700">ابحث باسم المنتج أو رقم الموديل</span>
-                  <input id="product-search" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="مثال: RE-5-096" className="h-14 w-full rounded-xl border border-cream-300 bg-cream-50 px-5 text-base text-ink-950 shadow-card" />
-                </label>
-              </section>
+              <PromoSlider onNavigate={handleNavigate} />
+
+              <Hero
+                query={query}
+                onQuery={setQuery}
+                files={sorted}
+                loading={isLoading}
+              />
 
               {/* الفلاتر — Skeleton أثناء الجلب من Drive */}
-              <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
+              {section !== "products3d" && <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
                 <Reveal>
                   <div className="rounded-[1rem] border border-cream-300/70 bg-cream-50/80 p-3 shadow-card md:rounded-[1.15rem] md:p-5">
                     {status === "ready" ? (
@@ -175,6 +177,7 @@ export default function App() {
                 </Reveal>
               </div>
 
+              }
               <div className="mt-6 md:mt-10">
                 <SectionCards
                   section={section}
@@ -182,6 +185,8 @@ export default function App() {
                   loading={isLoading}
                   onSelect={(s) => {
                     const next = s === section ? "all" : s;
+                    setCategory("all");
+                    setFileType("all");
                     setSection(next);
                     if (next !== "all") scrollToLibrary();
                   }}
@@ -189,9 +194,10 @@ export default function App() {
               </div>
 
               <div className="mt-4">
-                {status === "loading" && <SkeletonGrid />}
-                {status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
-                {status === "ready" && (
+                {section === "products3d" && <ProductCatalog query={query} />}
+                {section !== "products3d" && status === "loading" && <SkeletonGrid />}
+                {section !== "products3d" && status === "error" && <LibraryError onRetry={() => void load()} onDemo={useDemoFallback} />}
+                {section !== "products3d" && status === "ready" && (
                   <FileGrid
                     files={filtered}
                     section={section}

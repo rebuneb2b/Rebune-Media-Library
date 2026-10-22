@@ -266,7 +266,7 @@ export const SECTION_LABEL: Record<Section, string> = {
   videos: "الفيديوهات",
   gallery: "الصور والتصاميم",
   designs: "التصاميم",
-  products3d: "منتجات 3D",
+  products3d: "استكشف المنتجات",
   latest: "أحدث الملفات",
 };
 
