@@ -12,16 +12,15 @@ import {
 import { fetchDriveMedia, toMediaFile } from "./lib/drive";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
+import PromoSlider from "./components/PromoSlider";
 import SectionCards from "./components/SectionCards";
-import FilterChips from "./components/FilterChips";
 import FileGrid from "./components/FileGrid";
 import PreviewModal from "./components/PreviewModal";
 import ProductView from "./components/ProductView";
 import Footer from "./components/Footer";
 import MobileBottomNav from "./components/MobileBottomNav";
-import { SkeletonChips, SkeletonGrid, LibraryError } from "./components/States";
+import { SkeletonGrid, LibraryError } from "./components/States";
 import { ToastProvider } from "./components/Toast";
-import { Reveal } from "./components/ui";
 
 type Status = "loading" | "ready" | "error";
 type Source = "drive" | "demo";
@@ -148,33 +147,18 @@ export default function App() {
             />
           ) : (
             <>
+              <PromoSlider onNavigate={handleNavigate} />
+
               <Hero
                 query={query}
                 onQuery={setQuery}
-                files={sorted}
+                files={sectionFiles}
                 loading={isLoading}
+                category={category}
+                fileType={fileType}
+                onCategory={setCategory}
+                onFileType={setFileType}
               />
-
-              {/* الفلاتر — Skeleton أثناء الجلب من Drive */}
-              {section !== "products3d" && <div className="mx-auto mt-4 max-w-6xl px-4 md:mt-8 md:px-6">
-                <Reveal>
-                  <div className="rounded-[1rem] border border-cream-300/70 bg-cream-50/80 p-3 shadow-card md:rounded-[1.15rem] md:p-5">
-                    {status === "ready" ? (
-                      <FilterChips
-                        files={sectionFiles}
-                        category={category}
-                        fileType={fileType}
-                        onCategory={setCategory}
-                        onFileType={setFileType}
-                      />
-                    ) : (
-                      <SkeletonChips />
-                    )}
-                  </div>
-                </Reveal>
-              </div>
-
-              }
               <div className="mt-6 md:mt-10">
                 <SectionCards
                   section={section}
