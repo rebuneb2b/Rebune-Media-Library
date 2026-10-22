@@ -11,7 +11,6 @@ type Slide = {
   section: Section;
   accent: string;
   fullBleed?: boolean;
-  externalUrl?: string;
 };
 
 const SLIDES: Slide[] = [
@@ -25,7 +24,6 @@ const SLIDES: Slide[] = [
     section: "latest",
     accent: "from-white via-white to-white",
     fullBleed: true,
-    externalUrl: "https://rebune.com/product-category/home-appliances-and-kitchenware/heaters-and-insect-traps/",
   },
   {
     id: "latest",
@@ -43,7 +41,7 @@ const SLIDES: Slide[] = [
     title: "التصاميم الإعلانية بسهولة",
     subtitle: "تصفّح التصاميم الجاهزة للمنتجات والحملات من قسم واحد مرتب.",
     cta: "استعراض التصاميم",
-    image: "/media/designs-icon.png",
+    image: "/media/designs-banner.jpg",
     section: "designs",
     accent: "from-[#fff8f2] via-[#fffdfb] to-[#f7eee5]",
   },
@@ -53,7 +51,7 @@ const SLIDES: Slide[] = [
     title: "فيديوهات المنتجات أقرب لك",
     subtitle: "ابحث عن فيديو المنتج وافتحه أو حمّله مباشرة من المكتبة.",
     cta: "فتح الفيديوهات",
-    image: "/media/videos-icon.png",
+    image: "/media/videos-banner.jpg",
     section: "videos",
     accent: "from-[#fffaf5] via-white to-[#f3ede7]",
   },
@@ -114,19 +112,18 @@ export default function PromoSlider({ onNavigate }: { onNavigate: (section: Sect
               aria-hidden={index !== active}
             >
               {slide.fullBleed ? (
-                <a
-                  href={slide.externalUrl ?? "https://rebune.com/"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute inset-0 block h-full w-full cursor-pointer bg-[#f4f2ef]"
-                  aria-label="تصفح قسم الدفايات في موقع ريبون"
+                <button
+                  type="button"
+                  onClick={() => onNavigate(slide.section)}
+                  className="absolute inset-0 h-full w-full bg-[#f4f2ef]"
+                  aria-label="عرض بنر جديد ريبون"
                 >
                   <img
                     src={slide.image}
-                    alt="بنر دفايات ريبون"
+                    alt="بنر جديد ريبون"
                     className="h-full w-full object-cover object-center"
                   />
-                </a>
+                </button>
               ) : (
                 <>
                   <div className={`absolute inset-0 bg-gradient-to-l ${slide.accent}`} />
