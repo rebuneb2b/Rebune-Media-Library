@@ -11,6 +11,7 @@ type Slide = {
   section: Section;
   accent: string;
   fullBleed?: boolean;
+  externalUrl?: string;
 };
 
 const SLIDES: Slide[] = [
@@ -24,6 +25,7 @@ const SLIDES: Slide[] = [
     section: "latest",
     accent: "from-white via-white to-white",
     fullBleed: true,
+    externalUrl: "https://rebune.com/product-category/home-appliances-and-kitchenware/heaters-and-insect-traps/",
   },
   {
     id: "latest",
@@ -112,18 +114,19 @@ export default function PromoSlider({ onNavigate }: { onNavigate: (section: Sect
               aria-hidden={index !== active}
             >
               {slide.fullBleed ? (
-                <button
-                  type="button"
-                  onClick={() => onNavigate(slide.section)}
-                  className="absolute inset-0 h-full w-full bg-[#f4f2ef]"
-                  aria-label="عرض بنر جديد ريبون"
+                <a
+                  href={slide.externalUrl ?? "https://rebune.com/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 block h-full w-full cursor-pointer bg-[#f4f2ef]"
+                  aria-label="تصفح قسم الدفايات في موقع ريبون"
                 >
                   <img
                     src={slide.image}
-                    alt="بنر جديد ريبون"
+                    alt="بنر دفايات ريبون"
                     className="h-full w-full object-cover object-center"
                   />
-                </button>
+                </a>
               ) : (
                 <>
                   <div className={`absolute inset-0 bg-gradient-to-l ${slide.accent}`} />
